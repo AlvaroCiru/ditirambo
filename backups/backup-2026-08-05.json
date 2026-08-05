@@ -1,0 +1,19 @@
+{
+  "exported_at": "2026-08-05T16:55:10.910886+00:00",
+  "profiles": [
+    {
+      "id": "01f985d5-1874-456c-98db-1c0142890860",
+      "avatar_url": null,
+      "created_at": "2026-08-03T20:39:39.181957+00:00",
+      "display_name": "lucia"
+    },
+    {
+      "id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "avatar_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/avatars/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/8810597c-3050-4447-9a10-1070e05bde1c.jpeg",
+      "created_at": "2026-08-03T20:38:55.651062+00:00",
+      "display_name": "alvaro"
+    }
+  ],
+  "works": [],
+  "reviews": []
+}
