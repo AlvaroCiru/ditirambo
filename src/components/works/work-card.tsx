@@ -20,12 +20,14 @@ export function WorkCard({ work }: { work: Work }) {
         </span>
       </div>
       {work.imagen_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={work.imagen_url}
-          alt=""
-          className="h-40 w-full rounded-md object-cover"
-        />
+        <div className="aspect-square w-full overflow-hidden rounded-md bg-background">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={work.imagen_url}
+            alt=""
+            className="h-full w-full object-contain"
+          />
+        </div>
       )}
       <h3 className="font-heading text-lg leading-snug group-hover:underline">
         {work.titulo}

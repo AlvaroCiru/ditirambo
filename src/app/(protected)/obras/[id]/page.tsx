@@ -39,12 +39,14 @@ export default async function WorkDetailPage({
           <DeleteWorkButton workId={work.id} />
         </div>
         {work.imagen_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={work.imagen_url}
-            alt=""
-            className="max-h-80 w-full rounded-lg object-cover"
-          />
+          <div className="flex max-h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-background">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={work.imagen_url}
+              alt=""
+              className="max-h-80 w-full object-contain"
+            />
+          </div>
         )}
         <h1 className="font-heading text-3xl">{work.titulo}</h1>
         {(work.autor_creador || work.anio) && (
