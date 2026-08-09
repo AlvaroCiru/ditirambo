@@ -1,0 +1,417 @@
+{
+  "exported_at": "2026-08-09T06:07:22.384806+00:00",
+  "profiles": [
+    {
+      "id": "01f985d5-1874-456c-98db-1c0142890860",
+      "avatar_url": null,
+      "created_at": "2026-08-03T20:39:39.181957+00:00",
+      "display_name": "lucia"
+    },
+    {
+      "id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "avatar_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/avatars/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/8810597c-3050-4447-9a10-1070e05bde1c.jpeg",
+      "created_at": "2026-08-03T20:38:55.651062+00:00",
+      "display_name": "alvaro"
+    }
+  ],
+  "works": [
+    {
+      "id": "2f747431-ae95-47e2-ab20-9d1e383bfa71",
+      "anio": 1999,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'concerto':4A 'no.3':2A 'saxophone':3A 'symphony':1A 'takasi':5B 'yoshimatsu':6B",
+      "titulo": "Symphony No.3 - Saxophone Concerto",
+      "creado_en": "2026-08-06T11:12:38.788016+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/782fe07a-4d7a-4a33-9007-2ee0a00a4356.jpg",
+      "autor_creador": "Takasi Yoshimatsu"
+    },
+    {
+      "id": "bc7f8d2b-08c3-48b8-b6de-d7dfc81c0951",
+      "anio": 2004,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'are':2A 'morrissey':5B 'quarry':4A 'the':3A 'you':1A",
+      "titulo": "You Are the Quarry",
+      "creado_en": "2026-08-06T09:14:17.201422+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/29277b9b-6fb7-4272-81b1-38551f0b689f.jpg",
+      "autor_creador": "Morrissey"
+    },
+    {
+      "id": "4de7d0a9-6ee5-40ee-b570-8cbdfba17f8a",
+      "anio": 1992,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'rodríguez':3B 'silvio':1A,2B",
+      "titulo": "Silvio",
+      "creado_en": "2026-08-06T09:31:19.144167+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/5770893d-2c1f-4278-8467-373a54034b1d.jpg",
+      "autor_creador": "Silvio Rodríguez"
+    },
+    {
+      "id": "b92ce398-085c-45fb-bcbe-6112492ead08",
+      "anio": 1977,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'1':3A 'emerson':4B 'lake':5B 'palmer':6B 'vol':2A 'works':1A",
+      "titulo": "Works, Vol. 1",
+      "creado_en": "2026-08-06T09:27:21.411422+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/c75aa69f-cf35-43a6-8f1b-9220255d8c0e.png",
+      "autor_creador": "Emerson, Lake & Palmer"
+    },
+    {
+      "id": "fb9dd9cc-cb4d-4d0f-b3f5-638b0c24334b",
+      "anio": 1982,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'barro':1A 'spinetta':4B 'tal':2A 'vez':3A",
+      "titulo": "Barro Tal Vez",
+      "creado_en": "2026-08-06T09:19:37.350178+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/62e23285-51e2-40db-b423-7460cf664b0d.jpg",
+      "autor_creador": "Spinetta"
+    },
+    {
+      "id": "957447e3-dc26-4b86-94d8-76f28399b474",
+      "anio": 1853,
+      "tipo": "opera",
+      "estado": "completado",
+      "search": "'giuseppe':3B 'il':1A 'trovatore':2A 'verdi':4B",
+      "titulo": "Il Trovatore",
+      "creado_en": "2026-08-06T09:53:12.022053+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/51e424c3-95a8-4c4b-97e9-48a520e6c66e.jpg",
+      "autor_creador": "Giuseppe Verdi"
+    },
+    {
+      "id": "3d434df6-8ed6-4543-ab66-1c58cfc8d958",
+      "anio": 1972,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'emerson':2B 'lake':3B 'palmer':4B 'trilogy':1A",
+      "titulo": "Trilogy",
+      "creado_en": "2026-08-06T11:08:50.753553+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/635d0307-face-4767-bf86-f58f1be33ac6.jpg",
+      "autor_creador": "Emerson, Lake & Palmer"
+    },
+    {
+      "id": "0497b30d-7ca2-4fd9-b783-6929460842fb",
+      "anio": 2006,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'beirut':3B 'gulag':1A 'orkestar':2A",
+      "titulo": "Gulag Orkestar",
+      "creado_en": "2026-08-06T11:18:20.242918+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/0d70fa55-3342-4901-8c85-dd04bf64371f.jpg",
+      "autor_creador": "Beirut"
+    },
+    {
+      "id": "da5f0d25-9916-477d-853b-159173873620",
+      "anio": 1971,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'comus':3B 'first':1A 'utterance':2A",
+      "titulo": "First Utterance",
+      "creado_en": "2026-08-06T11:21:52.141544+00:00",
+      "creado_por": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6/568ae025-279f-4ba9-9379-734952409520.jpg",
+      "autor_creador": "Comus"
+    },
+    {
+      "id": "9651c18b-b2a5-42e6-ace5-508a6f1b26e0",
+      "anio": 1951,
+      "tipo": "libro",
+      "estado": "en_curso",
+      "search": "'centeno':5A 'd':7B 'el':1A,4A 'entre':3A 'guardián':2A 'j':6B 'salinger':8B",
+      "titulo": "El guardián entre el centeno",
+      "creado_en": "2026-08-08T06:53:07.662659+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/01f985d5-1874-456c-98db-1c0142890860/ca0354e2-6b9f-49a9-921e-1c277056077c.jpeg",
+      "autor_creador": "J. D. Salinger"
+    },
+    {
+      "id": "8688f975-5c26-4f2e-8e25-3a5c1554f2a1",
+      "anio": 1816,
+      "tipo": "opera",
+      "estado": "pendiente",
+      "search": "'barbiere':2A 'di':3A 'gioachino':5B 'il':1A 'rossini':6B 'siviglia':4A",
+      "titulo": "Il barbiere di Siviglia",
+      "creado_en": "2026-08-08T13:25:11.765685+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": null,
+      "autor_creador": "Gioachino Rossini"
+    },
+    {
+      "id": "f13f0c8f-d785-4ad1-a911-e35bd0829a50",
+      "anio": 2007,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'in':1A 'radiohead':3B 'rainbows':2A",
+      "titulo": "In Rainbows",
+      "creado_en": "2026-08-08T13:27:09.61451+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/01f985d5-1874-456c-98db-1c0142890860/840a46a7-5723-4c6d-9cd6-2227d3846b40.jpg",
+      "autor_creador": "Radiohead"
+    },
+    {
+      "id": "4e064bcf-0873-4b39-9b06-f881902be71d",
+      "anio": 2020,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'abnormal':3A 'new':2A 'strokes':5B 'the':1A,4B",
+      "titulo": "The New Abnormal",
+      "creado_en": "2026-08-08T13:28:18.711998+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/01f985d5-1874-456c-98db-1c0142890860/fc648e04-cd60-4183-bbef-9af03c77ec8e.jpg",
+      "autor_creador": "The Strokes"
+    },
+    {
+      "id": "3258facc-6832-4d01-9eee-148db5e4e1bb",
+      "anio": 2009,
+      "tipo": "pelicula",
+      "estado": "completado",
+      "search": "'muse':3B 'resistance':2A 'the':1A",
+      "titulo": "The Resistance",
+      "creado_en": "2026-08-08T13:31:46.485329+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/01f985d5-1874-456c-98db-1c0142890860/4eb45316-7ebf-4099-af3a-b8d64f7e7899.jpg",
+      "autor_creador": "Muse"
+    },
+    {
+      "id": "40c02c16-0c0c-46fa-946d-3d0d98cb6f0e",
+      "anio": 1997,
+      "tipo": "pelicula",
+      "estado": "completado",
+      "search": "'computer':2A 'ok':1A 'radiohead':3B",
+      "titulo": "OK Computer",
+      "creado_en": "2026-08-08T13:32:42.957469+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/01f985d5-1874-456c-98db-1c0142890860/eea2ef55-7ffe-478d-b765-c4e45fb30a6b.jpg",
+      "autor_creador": "Radiohead"
+    },
+    {
+      "id": "61ffc59e-f45b-4738-9b0f-d3ff434041fa",
+      "anio": 1972,
+      "tipo": "pelicula",
+      "estado": "completado",
+      "search": "'a':4A 'buy':3A 'can':1A 'dan':7B 'steely':6B 't':2A 'thrill':5A",
+      "titulo": "Can't Buy A Thrill",
+      "creado_en": "2026-08-08T13:30:54.672963+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/01f985d5-1874-456c-98db-1c0142890860/0a66e0e3-e38a-440c-8d6a-7a73d42015a8.jpg",
+      "autor_creador": "Steely Dan"
+    },
+    {
+      "id": "2169b040-1fda-4ce1-8a55-c38cb616b980",
+      "anio": 2024,
+      "tipo": "album_musica",
+      "estado": "completado",
+      "search": "'angine':2B 'de':3B 'poitrine':4B 'vol.1':1A",
+      "titulo": "Vol.1",
+      "creado_en": "2026-08-08T13:29:56.322034+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/01f985d5-1874-456c-98db-1c0142890860/6079e15e-04f9-4a63-94e8-1c2f88629381.jpg",
+      "autor_creador": "Angine De Poitrine"
+    },
+    {
+      "id": "978b134b-76c6-42e0-9de8-9e91872ba0c6",
+      "anio": 1981,
+      "tipo": "pelicula",
+      "estado": "completado",
+      "search": "'banshees':5B 'ju':1A,2A 'siouxsie':3B 'the':4B",
+      "titulo": "Ju Ju",
+      "creado_en": "2026-08-08T13:34:05.059291+00:00",
+      "creado_por": "01f985d5-1874-456c-98db-1c0142890860",
+      "imagen_url": "https://vbpdzttyhqnxcwchoobo.supabase.co/storage/v1/object/public/covers/01f985d5-1874-456c-98db-1c0142890860/2c1bdc3f-756d-4d6e-b2d8-79b243f07445.jpeg",
+      "autor_creador": "Siouxsie & The Banshees"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "c3656213-b611-464f-a330-4afced7dd5bb",
+      "nota": 9,
+      "texto": "Escuché la canción Selfless porque la metiste en la lista común y me gustó muchísimo. Decidí investigar el álbum completo y llevo varios días escuchándolo. En concreto ayer por la tarde y hoy, que no han sido momentos especialmente buenos, me lo habré puesto unas 7 veces entero. Es un buen compañero para el dolor. Tiene tintes melancólicos, desesperados y confusos, pero al final se aprecia una nota optimista que cierra con elegancia el viaje sonoro. Conocía el grupo porque en mi adolescencia escuchaba el indie de la época, Reptilia y You Only Live Once fueron canciones que machaqué mucho. Pero creo que este álbum es muy superior musicalmente y se nota la madurez del grupo. Me gustan muchos los sintetizadores, los agudos del cantante y las letras (que no son súper elaboradas, pero transmiten mucho).\r\nCanción favorita: Selfless (sin ninguna duda)",
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "4e064bcf-0873-4b39-9b06-f881902be71d",
+      "creado_en": "2026-08-08T13:28:35.341246+00:00",
+      "actualizado_en": "2026-08-08T13:28:35.089+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "b08b41d7-3585-4ad0-adf5-6c56eb827d8b",
+      "nota": 9,
+      "texto": "Esto me da esperanza en la especie humana (¡el grupo se formó en 2019!). La tradición del rock progresivo experimental sigue viva y eso da oxígeno a mis pulmones. Me pone que conozcas/te guste/me hayas recomendado esto :)",
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "2169b040-1fda-4ce1-8a55-c38cb616b980",
+      "creado_en": "2026-08-08T13:30:04.818062+00:00",
+      "actualizado_en": "2026-08-08T13:30:04.757+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "8e4ee1f9-b4d7-4228-ac57-5ba436a718a4",
+      "nota": 9,
+      "texto": "Creo que ha perdido las letras depresivas y no aprovecha su voz como hacía para The Smiths. en general está guay, pero me suena a un grupo indie más comercial. P.D. Me gustó tanto el concierto que ha subido puntos jeje\r\n-  Let Me Kiss You (8/10): buen ritmo, la letra un poco básica. \r\n-  Make up is a lie (7,5/10): más experimental, pero me falta algo para que me enganche. \r\n-  First of the gang to die )9/10): mi favorita, en concierto mejoró mucho :).\r\n-  Irish Blood, English Heart (8,5/10): mejor ritmo y más fuerza, la guitarra me sigue dando sensación de grupo indie.",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "bc7f8d2b-08c3-48b8-b6de-d7dfc81c0951",
+      "creado_en": "2026-08-06T09:15:24.47215+00:00",
+      "actualizado_en": "2026-08-06T09:18:30.105+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "84fec4e1-f5c0-461d-abdb-84230eb16bfe",
+      "nota": 9,
+      "texto": "No soy fan del acento argentino, pero el ritmo y la música de este tío suena muy bien. En general está muy bien producida. \r\n\r\n-  Barro Tal Vez (9/10): No tengo claro que instrumentos suenan, pero me gusta. Buena voz y letra para pensar, la he tenido que leer un par de veces.\r\n\r\nP.D. Seguir Viviendo Sin tu Amor (8,5/10): buen ritmo, no sé por qué me recuerda a David Bowie, y la guitarra me gusta mucho.",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "fb9dd9cc-cb4d-4d0f-b3f5-638b0c24334b",
+      "creado_en": "2026-08-06T09:21:24.763319+00:00",
+      "actualizado_en": "2026-08-06T09:23:50.133+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "87e3b351-cafe-48b8-8e4e-ad0ba6859350",
+      "nota": 10,
+      "texto": "- Piano Concerto: lo habré escuchado 10 veces y cada vez descubro algo, suena a banda sonora pero en el buen sentido, mezcla de estilos interesante (Los acordes del minuto 16 son los del Señor de los Anillos?)\r\n- Resto del Álbum: sorprende mucho tras la primera canción, no esperaba que fuera así para nada. Muy buena voz e instrumentales, muchos colores distintos en cada canción. Demuestran que pueden tocar lo que les apetezca. Canción favorita (C'est la vie), no me puedo resistir a un acordeón.",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "b92ce398-085c-45fb-bcbe-6112492ead08",
+      "creado_en": "2026-08-06T09:30:14.724442+00:00",
+      "actualizado_en": "2026-08-06T09:30:14.649+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "f2957681-5b0c-4033-a05c-986ed5e2601d",
+      "nota": 10,
+      "texto": "Con la guitarra y la voz de este tío me enamoro hasta de Pedro Sánchez, no tengo mucho más que decir.",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "4de7d0a9-6ee5-40ee-b570-8cbdfba17f8a",
+      "creado_en": "2026-08-06T09:31:29.616201+00:00",
+      "actualizado_en": "2026-08-06T09:31:29.544+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "806e926f-d6c4-4765-b419-08434f22ae4d",
+      "nota": 10,
+      "texto": "La verdad que ha sido una experiencia que no había vivido nunca, siempre que había escuchado ópera no lo había puesto en contexto, y saber cuál es la historia me ha hecho disfrutarlo mucho más, y también entenderlo mejor musicalmente. La historia no me la esperaba así la verdad. Una gitana de VIzcaya? Bastante interesante, aunque un poco trágica, supongo que la mayoría de óperas serán así. \r\n\r\nP.D. (Después de ir a la ópera): Es una de las experiencias mas bonitas que he vivido. Gracias por invitarme. Lo que ha pasado después ya es historia :).",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "957447e3-dc26-4b86-94d8-76f28399b474",
+      "creado_en": "2026-08-06T09:56:28.298651+00:00",
+      "actualizado_en": "2026-08-06T09:56:28.206+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "1a9788e8-6998-4d78-9d07-5c6c37414775",
+      "nota": 9,
+      "texto": "No se parece a algo que haya escuchado antes, como dijiste, el cerebro recibe estímulo constante, sin dejar nada estático. Lo he escuchado como 5 veces entero, y lo que me gusta es que cada vez me fijo en algo distinto. Una cosa que me pasa es que cuando lo escucho acabo pensando en mis cosas, desconecto sin darme cuenta. Igual es el objetivo. \r\n\r\nCanciones favoritas: The endless enigma pt.1 y The Sheriff, esas son 10/10",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "3d434df6-8ed6-4543-ab66-1c58cfc8d958",
+      "creado_en": "2026-08-06T11:11:03.978849+00:00",
+      "actualizado_en": "2026-08-06T11:11:03.708+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "d70f12c5-fb63-4f49-8627-2702a5d8f944",
+      "nota": 9,
+      "texto": "Buena composición, lo veo como una mezcla entre jazz con partes clásicas (no sé como aguanta la respiración este tío jajajajaja). Guay para relajarse y tomarse un whisky con hielo, música para gente con elegancia. Me lo guardo",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "2f747431-ae95-47e2-ab20-9d1e383bfa71",
+      "creado_en": "2026-08-06T11:15:15.591319+00:00",
+      "actualizado_en": "2026-08-06T11:15:15.303+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "0ec96231-4ee4-4085-90ca-15464b3df01b",
+      "nota": 8,
+      "texto": "Buen ambiente, me gustan las voces y los coros. Me gustaría que fuese un poco mas largo, pero en general está muy bien producido (Me encanta el acordeón, lo vuelvo a repetir :S), me dan ganas de irme de viaje y dedicarme a cantar esto por la carretera. \r\n\r\nCanciones favoritas: Prenzlaurberg y Mount Wrociai.",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "0497b30d-7ca2-4fd9-b783-6929460842fb",
+      "creado_en": "2026-08-06T11:19:58.575112+00:00",
+      "actualizado_en": "2026-08-06T11:19:58.317+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "d706b48d-7516-4d56-ba87-54551a60d496",
+      "nota": 9,
+      "texto": "He de decir que tuve miedo escuchando la primera canción, pensé que iba a ser la primera mala reseña. Pero \"The Herald\" me introdujo en un mundo que no había conocido. Me encanta el ambiente que crea el grupo. El otro día me salté dos paradas de metro sin querer :S. Pongo un 9/10 porque sigue sin convencerme el principio, pero es muy buen álbum. \r\n\r\nCanción favorita: The Prisoner",
+      "user_id": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6",
+      "work_id": "da5f0d25-9916-477d-853b-159173873620",
+      "creado_en": "2026-08-06T11:28:09.124734+00:00",
+      "actualizado_en": "2026-08-06T11:28:08.861+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "c7a2c80d-2b14-4dde-927b-b904327b5ffe",
+      "nota": null,
+      "texto": null,
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "9651c18b-b2a5-42e6-ace5-508a6f1b26e0",
+      "creado_en": "2026-08-08T06:53:35.401685+00:00",
+      "actualizado_en": "2026-08-08T06:53:35.149+00:00",
+      "recomendado_para": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6"
+    },
+    {
+      "id": "0f9905b4-6be2-4091-ba6b-ffffcef1c5f2",
+      "nota": null,
+      "texto": null,
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "8688f975-5c26-4f2e-8e25-3a5c1554f2a1",
+      "creado_en": "2026-08-08T13:25:17.592987+00:00",
+      "actualizado_en": "2026-08-08T13:25:17.503+00:00",
+      "recomendado_para": "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6"
+    },
+    {
+      "id": "e85b0f72-37d4-4e4d-b812-4460d505b3aa",
+      "nota": 9,
+      "texto": "Tras dos álbumes de Radiohead me declaro fan absoluta y me avergüenza no haberlos escuchado antes. Ritmos muy interesantes, divisiones de compases raros que no dejan indiferente. Musicalmente muchísimo más avanzado y especial de lo que podía haber imaginado. Intercalan canciones extrañas con acordes complejos y otras más suaves y melódicas. Todo ello mientras crean un ambiente que te empuja hacia algún lugar colorido y bucólico (?). Me ha costado muchísimo escocger favorita. Me gustan mucho todas.\r\nCanción favorita: Weird Fishes / Arpeggi, Faust Arp",
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "f13f0c8f-d785-4ad1-a911-e35bd0829a50",
+      "creado_en": "2026-08-08T13:27:28.653847+00:00",
+      "actualizado_en": "2026-08-08T13:27:28.35+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "f45aeef9-6ee6-4e32-9436-0b76672120e6",
+      "nota": 9,
+      "texto": "Si tengo que describir este álbum en una palabra, esta sería ÉPICO. Es la gran arenga previa a la batalla final de una guerra entre el pasado y el futuro. Me ha dado la fuerza para, potencialmente, enfrentarme a los enemigos de España en caso de ser necesario. Es un buen equilibrio entre canciones épicas y pegadizas y momentos más experimentales donde ya pasamos a otra dimensión. Gratamente sorprendida con Muse a quienes imaginaba más comerciales.",
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "3258facc-6832-4d01-9eee-148db5e4e1bb",
+      "creado_en": "2026-08-08T13:31:55.586721+00:00",
+      "actualizado_en": "2026-08-08T13:31:55.516+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "fedaf8b2-2179-43f8-8351-311e619b6eb9",
+      "nota": 10,
+      "texto": "Me encanta que me haya encantado esto. Llevaba años pensando en escucharlo porque sabía que me iba a encantar y ha superado con creces mis expectativas. La atmósfera te envuelve y te acompaña en un viaje interestelar entre mundos desconocidos. La sutileza se impone a lo largo de todo el álbum. Buenísimos momentos de guitarra y voz. Así como la parte más experimental “extraterrestre”. Todo perfecto. Impecable. \r\nNo puedo elegir canciones favorita me han gustado todas demasiado. \r\n(10/10) como tu barrio",
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "40c02c16-0c0c-46fa-946d-3d0d98cb6f0e",
+      "creado_en": "2026-08-08T13:32:52.10424+00:00",
+      "actualizado_en": "2026-08-08T13:32:52.038+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "f749a360-0f27-4756-a9cb-90cc35356899",
+      "nota": 9,
+      "texto": "Un sonido al que todavía me debo acostumbrar para captar todos los matices y la profundidad, pero me ha impresionado. Momentos experimentales, canciones pegadizas, letras curiosas (un tanto oscuras, en el mejor de los sentidos) y momentos de rebeldía. La voz de la cantante es bastante interesante. Night Shift no es la canción que más me ha gustado, pero tiene una frase que repite varias veces “Fuck the mothers, kill the others” que me ha parecido magistral. (9,5/10)\r\nCanción favorita: Into the light",
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "978b134b-76c6-42e0-9de8-9e91872ba0c6",
+      "creado_en": "2026-08-08T13:34:18.225535+00:00",
+      "actualizado_en": "2026-08-08T13:34:18.162+00:00",
+      "recomendado_para": null
+    },
+    {
+      "id": "9de9c1be-43b6-42a1-93bd-58628c12a191",
+      "nota": 7,
+      "texto": "Soy consciente de que esto es bueno. Está bien producido, son buenos músicos, canciones interesantes… Lo que pasa es que no consigo que me transmita tanto como debería. Lo puedo escuchar, lo disfruto y lo aprecio; pero no me transmite lo que otra música de la época tal vez más experimental o psicodélica consigue. Creo que es una cuestión geográfica. Estados Unidos se apoderó de un sonido más alegre y los británicos monopolizaron la melancolía y lo extraño. Siempre me quedaré con esto segundo. \r\nCanciones favoritas: Dirty Work (preciosa), Reelin' In The Years (esa es un 10)",
+      "user_id": "01f985d5-1874-456c-98db-1c0142890860",
+      "work_id": "61ffc59e-f45b-4738-9b0f-d3ff434041fa",
+      "creado_en": "2026-08-08T13:31:02.231039+00:00",
+      "actualizado_en": "2026-08-08T13:35:18.525+00:00",
+      "recomendado_para": null
+    }
+  ]
+}
