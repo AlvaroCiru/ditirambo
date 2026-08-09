@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Pencil } from "lucide-react";
 import { getWorkWithReviews } from "@/lib/queries";
 import { getAuthedUser, getProfiles } from "@/lib/dal";
 import { CategoryBadge } from "@/components/works/category-badge";
@@ -6,6 +8,7 @@ import { ReviewForm } from "@/components/works/review-form";
 import { ReviewList } from "@/components/works/review-list";
 import { StatusSelect } from "@/components/works/status-select";
 import { DeleteWorkButton } from "@/components/works/delete-work-button";
+import { Button } from "@/components/ui/button";
 
 export default async function WorkDetailPage({
   params,
@@ -36,7 +39,20 @@ export default async function WorkDetailPage({
       >
         <div className="flex items-start justify-between gap-4">
           <CategoryBadge tipo={work.tipo} />
-          <DeleteWorkButton workId={work.id} />
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Editar obra"
+              nativeButton={false}
+              render={
+                <Link href={`/obras/${work.id}/editar`}>
+                  <Pencil className="size-4" />
+                </Link>
+              }
+            />
+            <DeleteWorkButton workId={work.id} />
+          </div>
         </div>
         {work.imagen_url && (
           <div className="flex max-h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-background">
