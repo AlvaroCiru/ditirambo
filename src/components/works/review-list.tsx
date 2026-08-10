@@ -1,6 +1,7 @@
 import type { Profile, Review } from "@/lib/types";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { DeleteReviewButton } from "@/components/works/delete-review-button";
+import { StarRating } from "@/components/works/star-rating";
 
 export function ReviewList({
   workId,
@@ -44,11 +45,7 @@ export function ReviewList({
                 </span>
               </span>
               <div className="flex shrink-0 items-center gap-1">
-                {review.nota != null && (
-                  <span className="rounded-full bg-secondary px-2.5 py-0.5 text-sm font-semibold text-secondary-foreground">
-                    {review.nota}/10
-                  </span>
-                )}
+                <StarRating value={review.nota} size="sm" />
                 <DeleteReviewButton workId={workId} reviewId={review.id} />
               </div>
             </div>

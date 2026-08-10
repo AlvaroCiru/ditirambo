@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidRating, parseRating } from "./rating";
 import type { WorkStatus, WorkType } from "./types";
 
 export const WORK_TYPE_VALUES = [
@@ -42,10 +43,13 @@ export const reviewSchema = z.object({
   nota: z
     .string()
     .optional()
-    .transform((v) => (v ? Number(v) : undefined))
+    .transform((v) => {
+      const n = parseRating(v);
+      return n == null ? undefined : n;
+    })
     .refine(
-      (v) => v === undefined || (Number.isInteger(v) && v >= 1 && v <= 10),
-      "La nota debe estar entre 1 y 10.",
+      (v) => v === undefined || isValidRating(v),
+      "La nota debe estar entre 0.5 y 5, en medios puntos.",
     ),
   texto: z
     .string()

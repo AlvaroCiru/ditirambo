@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CategoryBadge } from "./category-badge";
 import { UserAvatar } from "@/components/profile/user-avatar";
+import { StarRating } from "@/components/works/star-rating";
 import type { FeedItem } from "@/lib/queries";
 import type { Profile } from "@/lib/types";
 
@@ -27,9 +28,7 @@ export function ActivityItem({
     >
       <div className="flex items-center justify-between gap-2">
         <CategoryBadge tipo={item.work.tipo} />
-        {item.review.nota != null && (
-          <span className="text-sm font-semibold">{item.review.nota}/10</span>
-        )}
+        <StarRating value={item.review.nota} size="sm" />
       </div>
       <p className="flex min-w-0 items-center gap-2 text-sm">
         <UserAvatar

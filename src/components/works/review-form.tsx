@@ -3,9 +3,9 @@
 import { useActionState } from "react";
 import { upsertReview, type ReviewFormState } from "@/lib/actions/reviews";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { StarRatingInput } from "@/components/works/star-rating";
 import type { Review } from "@/lib/types";
 
 const initialState: ReviewFormState = {};
@@ -27,20 +27,14 @@ export function ReviewForm({
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="nota">Nota (1-10)</Label>
-          <Input
-            id="nota"
-            name="nota"
-            type="number"
-            min={1}
-            max={10}
-            className="w-20"
-            defaultValue={existingReview?.nota ?? undefined}
-          />
-        </div>
-        <div className="flex flex-col gap-1 pb-2">
+      <div className="flex flex-col gap-3">
+        <Label htmlFor="nota">Nota</Label>
+        <StarRatingInput
+          id="nota"
+          name="nota"
+          defaultValue={existingReview?.nota}
+        />
+        <div className="flex flex-col gap-1">
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
