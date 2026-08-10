@@ -97,7 +97,7 @@ export function AppShell({
   );
 
   return (
-    <div className="flex min-h-dvh flex-col md:flex-row md:items-start">
+    <div className="flex min-h-dvh flex-col md:flex-row">
       {/* Cabecera móvil */}
       <div className="sticky top-0 z-30 border-b border-border bg-card md:hidden">
         <div className="flex items-center justify-between gap-3 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
@@ -175,10 +175,13 @@ export function AppShell({
         </aside>
       </div>
 
-      {/* Barra lateral escritorio: altura propia, hace scroll con la página */}
+      {/*
+        Escritorio: rail a altura del documento (sin recorte) y position static
+        para que suba/baje con el scroll de la página, no quede fijado.
+      */}
       <aside
         className={cn(
-          "hidden shrink-0 flex-col border-r border-border bg-card pt-[env(safe-area-inset-top)] transition-[width] duration-200 md:flex",
+          "static hidden min-h-dvh shrink-0 flex-col border-r border-border bg-card pt-[env(safe-area-inset-top)] transition-[width] duration-200 md:flex",
           expanded ? "w-56" : "w-16",
         )}
       >
@@ -226,7 +229,7 @@ export function AppShell({
         {nav(expanded)}
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
         <header className="hidden border-b border-border bg-card md:block md:pt-[env(safe-area-inset-top)]">
           <div className="flex w-full items-center justify-end gap-3 px-6 py-3">
             {profileSlot}
