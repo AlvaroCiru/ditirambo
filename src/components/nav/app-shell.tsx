@@ -65,7 +65,7 @@ export function AppShell({
   const nav = (showLabels: boolean) => (
     <nav
       aria-label="Módulos"
-      className="flex flex-col gap-1 px-2 py-2"
+      className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 py-2"
     >
       {APP_MODULES.map((mod) => {
         const Icon = mod.icon;
@@ -175,13 +175,10 @@ export function AppShell({
         </aside>
       </div>
 
-      {/*
-        Escritorio: rail a altura del documento (sin recorte) y position static
-        para que suba/baje con el scroll de la página, no quede fijado.
-      */}
+      {/* Escritorio: barra sticky a la ventana; los módulos siguen visibles al scrollear */}
       <aside
         className={cn(
-          "static hidden min-h-dvh shrink-0 flex-col border-r border-border bg-card pt-[env(safe-area-inset-top)] transition-[width] duration-200 md:flex",
+          "hidden shrink-0 flex-col border-r border-border bg-card pt-[env(safe-area-inset-top)] transition-[width] duration-200 md:sticky md:top-0 md:flex md:h-dvh",
           expanded ? "w-56" : "w-16",
         )}
       >
@@ -229,7 +226,7 @@ export function AppShell({
         {nav(expanded)}
       </aside>
 
-      <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <header className="hidden border-b border-border bg-card md:block md:pt-[env(safe-area-inset-top)]">
           <div className="flex w-full items-center justify-end gap-3 px-6 py-3">
             {profileSlot}
