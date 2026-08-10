@@ -47,7 +47,7 @@ export default async function WorkDetailPage({
               aria-label="Editar obra"
               nativeButton={false}
               render={
-                <Link href={`/reseñas/obras/${work.id}/editar`}>
+                <Link href={`/resenas/obras/${work.id}/editar`}>
                   <Pencil className="size-4" />
                 </Link>
               }

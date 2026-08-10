@@ -5,24 +5,24 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/reseñas", label: "Inicio", exact: true },
-  { href: "/reseñas/obras", label: "Obras" },
-  { href: "/reseñas/obras/nueva", label: "Añadir" },
+  { href: "/resenas", label: "Inicio", exact: true },
+  { href: "/resenas/obras", label: "Obras" },
+  { href: "/resenas/obras/nueva", label: "Añadir" },
 ];
 
 function isActive(pathname: string, href: string, exact?: boolean) {
-  if (exact || href === "/reseñas") return pathname === "/reseñas";
-  if (href === "/reseñas/obras/nueva") {
+  if (exact || href === "/resenas") return pathname === "/resenas";
+  if (href === "/resenas/obras/nueva") {
     return (
-      pathname === "/reseñas/obras/nueva" ||
-      pathname.startsWith("/reseñas/obras/nueva/")
+      pathname === "/resenas/obras/nueva" ||
+      pathname.startsWith("/resenas/obras/nueva/")
     );
   }
-  if (href === "/reseñas/obras") {
+  if (href === "/resenas/obras") {
     return (
-      pathname === "/reseñas/obras" ||
-      (pathname.startsWith("/reseñas/obras/") &&
-        !pathname.startsWith("/reseñas/obras/nueva"))
+      pathname === "/resenas/obras" ||
+      (pathname.startsWith("/resenas/obras/") &&
+        !pathname.startsWith("/resenas/obras/nueva"))
     );
   }
   return pathname === href || pathname.startsWith(`${href}/`);

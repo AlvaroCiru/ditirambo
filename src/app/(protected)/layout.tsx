@@ -34,7 +34,7 @@ export default async function ProtectedLayout({
     <div className="flex min-h-dvh flex-col md:flex-row">
       <div className="border-b border-border md:hidden">
         <div className="flex items-center justify-between gap-3 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
-          <Link href="/reseñas" className="font-heading text-xl italic">
+          <Link href="/resenas" className="font-heading text-xl italic">
             Ditirambo
           </Link>
           <div className="flex min-w-0 items-center gap-3">

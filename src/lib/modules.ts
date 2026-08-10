@@ -15,11 +15,11 @@ export interface AppModule {
 
 export const APP_MODULES: AppModule[] = [
   {
-    id: "reseñas",
+    id: "resenas",
     label: "Reseñas",
-    href: "/reseñas",
+    href: "/resenas",
     icon: Star,
-    match: ["/reseñas"],
+    match: ["/resenas"],
   },
 ];
 

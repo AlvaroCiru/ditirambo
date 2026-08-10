@@ -39,7 +39,7 @@ export default async function FeedPage() {
         {activity.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             Todavía no hay reseñas.{" "}
-            <Link href="/reseñas/obras/nueva" className="underline">
+            <Link href="/resenas/obras/nueva" className="underline">
               Añade la primera obra
             </Link>
             .

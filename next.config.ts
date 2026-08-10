@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.supabase.co",
+        hostname: "vbpdzttyhqnxcwchoobo.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
     ],
@@ -14,12 +14,32 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/obras",
-        destination: "/reseñas/obras",
+        destination: "/resenas/obras",
         permanent: true,
       },
       {
         source: "/obras/:path*",
-        destination: "/reseñas/obras/:path*",
+        destination: "/resenas/obras/:path*",
+        permanent: true,
+      },
+      {
+        source: "/reseñas",
+        destination: "/resenas",
+        permanent: true,
+      },
+      {
+        source: "/reseñas/:path*",
+        destination: "/resenas/:path*",
+        permanent: true,
+      },
+      {
+        source: "/rese%C3%B1as",
+        destination: "/resenas",
+        permanent: true,
+      },
+      {
+        source: "/rese%C3%B1as/:path*",
+        destination: "/resenas/:path*",
         permanent: true,
       },
     ];

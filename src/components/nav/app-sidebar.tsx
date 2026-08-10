@@ -11,7 +11,7 @@ export function AppSidebar() {
   return (
     <aside className="flex w-full shrink-0 flex-col border-border bg-card md:w-56 md:border-r md:pt-[env(safe-area-inset-top)]">
       <div className="hidden px-4 py-4 md:block">
-        <Link href="/reseñas" className="font-heading text-xl italic">
+        <Link href="/resenas" className="font-heading text-xl italic">
           Ditirambo
         </Link>
         <p className="mt-1 text-xs text-muted-foreground">

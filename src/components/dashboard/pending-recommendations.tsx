@@ -22,7 +22,7 @@ export function PendingRecommendations({
           return (
             <Link
               key={work.id}
-              href={`/reseñas/obras/${work.id}`}
+              href={`/resenas/obras/${work.id}`}
               className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 shadow-sm transition-shadow hover:shadow-md"
               style={{
                 borderLeftColor: `var(--category-${work.tipo})`,
