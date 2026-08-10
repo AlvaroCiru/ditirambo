@@ -119,11 +119,25 @@ export async function updateWork(
     anio: parsed.data.anio ?? null,
   };
 
+  let previousCoverPath: string | undefined;
   const imagenFile = formData.get("imagen");
   if (imagenFile instanceof File && imagenFile.size > 0) {
     const uploaded = await uploadCoverImage(supabase, user.id, imagenFile);
     if (uploaded.error) return { error: uploaded.error };
     updates.imagen_url = uploaded.url;
+
+    const { data: currentWork } = await supabase
+      .from("works")
+      .select("imagen_url")
+      .eq("id", workId)
+      .maybeSingle();
+
+    const marker = "/covers/";
+    const oldUrl = currentWork?.imagen_url;
+    const markerIndex = oldUrl?.indexOf(marker) ?? -1;
+    if (oldUrl && markerIndex !== -1) {
+      previousCoverPath = oldUrl.slice(markerIndex + marker.length);
+    }
   }
 
   const { error } = await supabase
@@ -133,6 +147,12 @@ export async function updateWork(
 
   if (error) {
     return { error: "No se ha podido actualizar la obra." };
+  }
+
+  // Best-effort: si falla el borrado de la portada antigua no bloqueamos
+  // la edición (p. ej. política antigua o archivo ya ausente).
+  if (previousCoverPath) {
+    await supabase.storage.from("covers").remove([previousCoverPath]);
   }
 
   revalidatePath(`/obras/${workId}`);
@@ -155,7 +175,6 @@ export async function updateWorkStatus(workId: string, estado: string) {
 
   revalidatePath(`/obras/${workId}`);
   revalidatePath("/obras");
-  revalidatePath("/");
 }
 
 export async function deleteWork(workId: string) {

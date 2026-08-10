@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Pencil } from "lucide-react";
@@ -55,16 +56,18 @@ export default async function WorkDetailPage({
           </div>
         </div>
         {work.imagen_url && (
-          <div className="flex max-h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-background">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+          <div className="relative flex h-80 max-h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-background">
+            <Image
               src={work.imagen_url}
               alt=""
-              className="max-h-80 w-full object-contain"
+              fill
+              sizes="(max-width: 896px) 100vw, 896px"
+              className="object-contain"
+              priority
             />
           </div>
         )}
-        <h1 className="font-heading text-3xl">{work.titulo}</h1>
+        <h1 className="break-words font-heading text-3xl">{work.titulo}</h1>
         {(work.autor_creador || work.anio) && (
           <p className="text-muted-foreground">
             {[work.autor_creador, work.anio].filter(Boolean).join(" · ")}

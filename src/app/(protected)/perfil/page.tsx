@@ -10,7 +10,7 @@ export default async function PerfilPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="font-heading text-2xl">Tu perfil</h1>
-      <div className="max-w-md rounded-xl border border-border bg-card p-6">
+      <div className="mx-auto w-full max-w-md rounded-xl border border-border bg-card p-6 md:max-w-xl">
         <ProfileForm
           key={`${username}-${me?.display_name}-${me?.avatar_url}`}
           displayName={me?.display_name ?? username}

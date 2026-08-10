@@ -31,18 +31,20 @@ export function ActivityItem({
           <span className="text-sm font-semibold">{item.review.nota}/10</span>
         )}
       </div>
-      <p className="flex items-center gap-2 text-sm">
+      <p className="flex min-w-0 items-center gap-2 text-sm">
         <UserAvatar
           displayName={author?.display_name ?? "?"}
           avatarUrl={author?.avatar_url ?? null}
           size="sm"
         />
-        <span>
+        <span className="min-w-0">
           <span className="font-medium">
             {author?.display_name ?? "Alguien"}
           </span>{" "}
           reseñó{" "}
-          <span className="font-heading italic">{item.work.titulo}</span>
+          <span className="font-heading break-words italic">
+            {item.work.titulo}
+          </span>
         </span>
       </p>
       {item.review.texto && (

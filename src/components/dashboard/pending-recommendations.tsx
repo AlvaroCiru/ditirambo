@@ -34,11 +34,11 @@ export function PendingRecommendations({
                 avatarUrl={from?.avatar_url ?? null}
                 size="sm"
               />
-              <div className="flex flex-col">
-                <span className="font-heading text-base leading-snug">
+              <div className="flex min-w-0 flex-col">
+                <span className="font-heading line-clamp-2 text-base leading-snug break-words">
                   {work.titulo}
                 </span>
-                <span className="text-xs text-muted-foreground">
+                <span className="truncate text-xs text-muted-foreground">
                   Te lo recomendó {from?.display_name ?? "tu pareja"}
                 </span>
               </div>

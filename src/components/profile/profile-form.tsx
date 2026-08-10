@@ -25,13 +25,13 @@ export function ProfileForm({
 
   return (
     <form action={formAction} className="flex flex-col gap-5">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
         <UserAvatar
           displayName={displayName}
           avatarUrl={avatarUrl}
           size="lg"
         />
-        <div className="flex flex-col gap-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
           <Label htmlFor="avatar">Foto de perfil</Label>
           <Input id="avatar" name="avatar" type="file" accept="image/*" />
         </div>

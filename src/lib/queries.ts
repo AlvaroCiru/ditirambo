@@ -5,6 +5,12 @@ import { getAuthedUser } from "@/lib/dal";
 import { CATEGORY_ORDER, STATUS_ORDER } from "@/lib/categories";
 import type { Review, Work, WorkStatus, WorkType } from "@/lib/types";
 
+const WORK_LIST_COLUMNS =
+  "id, tipo, titulo, autor_creador, anio, imagen_url, estado, creado_por, creado_en" as const;
+
+const WORK_FEED_COLUMNS =
+  "id, tipo, titulo, autor_creador, anio, imagen_url, estado, creado_por, creado_en" as const;
+
 export interface WorksFilter {
   q?: string;
   tipo?: WorkType;
@@ -17,7 +23,7 @@ export async function getWorks(filter: WorksFilter = {}): Promise<Work[]> {
 
   let query = supabase
     .from("works")
-    .select("*")
+    .select(WORK_LIST_COLUMNS)
     .order("creado_en", { ascending: false });
 
   if (filter.tipo) query = query.eq("tipo", filter.tipo);
@@ -31,7 +37,21 @@ export async function getWorks(filter: WorksFilter = {}): Promise<Work[]> {
 
   const { data, error } = await query;
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as Work[];
+}
+
+export async function getWork(id: string): Promise<Work | null> {
+  await getAuthedUser();
+  const supabase = await createClient();
+
+  const { data: work, error } = await supabase
+    .from("works")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw error;
+  return work;
 }
 
 export async function getWorkWithReviews(
@@ -75,7 +95,7 @@ export async function getRecentActivity(limit = 20): Promise<FeedItem[]> {
 
   const { data, error } = await supabase
     .from("reviews")
-    .select("*, works(*)")
+    .select(`*, works(${WORK_FEED_COLUMNS})`)
     .order("creado_en", { ascending: false })
     .limit(limit)
     .returns<ReviewWithWork[]>();
@@ -98,30 +118,46 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   await getAuthedUser();
   const supabase = await createClient();
 
-  const [worksResult, reviewsResult] = await Promise.all([
-    supabase.from("works").select("tipo, estado"),
-    supabase.from("reviews").select("id", { count: "exact", head: true }),
-  ]);
+  const [totalWorksResult, totalReviewsResult, ...filterResults] =
+    await Promise.all([
+      supabase.from("works").select("id", { count: "exact", head: true }),
+      supabase.from("reviews").select("id", { count: "exact", head: true }),
+      ...CATEGORY_ORDER.map((tipo) =>
+        supabase
+          .from("works")
+          .select("id", { count: "exact", head: true })
+          .eq("tipo", tipo),
+      ),
+      ...STATUS_ORDER.map((estado) =>
+        supabase
+          .from("works")
+          .select("id", { count: "exact", head: true })
+          .eq("estado", estado),
+      ),
+    ]);
 
-  if (worksResult.error) throw worksResult.error;
-  if (reviewsResult.error) throw reviewsResult.error;
+  if (totalWorksResult.error) throw totalWorksResult.error;
+  if (totalReviewsResult.error) throw totalReviewsResult.error;
 
   const categoryCounts = Object.fromEntries(
-    CATEGORY_ORDER.map((tipo) => [tipo, 0]),
+    CATEGORY_ORDER.map((tipo, index) => {
+      const result = filterResults[index];
+      if (result.error) throw result.error;
+      return [tipo, result.count ?? 0];
+    }),
   ) as Record<WorkType, number>;
+
   const statusCounts = Object.fromEntries(
-    STATUS_ORDER.map((estado) => [estado, 0]),
+    STATUS_ORDER.map((estado, index) => {
+      const result = filterResults[CATEGORY_ORDER.length + index];
+      if (result.error) throw result.error;
+      return [estado, result.count ?? 0];
+    }),
   ) as Record<WorkStatus, number>;
 
-  const works = worksResult.data ?? [];
-  for (const work of works) {
-    categoryCounts[work.tipo as WorkType] += 1;
-    statusCounts[work.estado as WorkStatus] += 1;
-  }
-
   return {
-    totalWorks: works.length,
-    totalReviews: reviewsResult.count ?? 0,
+    totalWorks: totalWorksResult.count ?? 0,
+    totalReviews: totalReviewsResult.count ?? 0,
     categoryCounts,
     statusCounts,
   };
@@ -139,20 +175,6 @@ export async function getPendingRecommendations(): Promise<
   const user = await getAuthedUser();
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("reviews")
-    .select("*, works(*)")
-    .eq("recomendado_para", user.id)
-    .returns<ReviewWithWork[]>();
-
-  if (error) throw error;
-
-  const candidates = (data ?? []).filter(
-    (row): row is ReviewWithWork & { works: Work } => row.works !== null,
-  );
-
-  if (candidates.length === 0) return [];
-
   const { data: myReviews, error: myReviewsError } = await supabase
     .from("reviews")
     .select("work_id")
@@ -160,9 +182,22 @@ export async function getPendingRecommendations(): Promise<
 
   if (myReviewsError) throw myReviewsError;
 
-  const reviewedWorkIds = new Set((myReviews ?? []).map((r) => r.work_id));
+  const reviewedWorkIds = (myReviews ?? []).map((r) => r.work_id);
 
-  return candidates
-    .filter((row) => !reviewedWorkIds.has(row.work_id))
+  let query = supabase
+    .from("reviews")
+    .select(`*, works(${WORK_FEED_COLUMNS})`)
+    .eq("recomendado_para", user.id);
+
+  if (reviewedWorkIds.length > 0) {
+    query = query.not("work_id", "in", `(${reviewedWorkIds.join(",")})`);
+  }
+
+  const { data, error } = await query.returns<ReviewWithWork[]>();
+
+  if (error) throw error;
+
+  return (data ?? [])
+    .filter((row): row is ReviewWithWork & { works: Work } => row.works !== null)
     .map(({ works, ...fromReview }) => ({ work: works, fromReview }));
 }

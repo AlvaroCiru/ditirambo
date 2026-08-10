@@ -32,16 +32,18 @@ export function ReviewList({
             key={review.id}
             className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4"
           >
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 font-medium">
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex min-w-0 items-center gap-2 font-medium">
                 <UserAvatar
                   displayName={author?.display_name ?? "?"}
                   avatarUrl={author?.avatar_url ?? null}
                   size="sm"
                 />
-                {author?.display_name ?? "Desconocido"}
+                <span className="truncate">
+                  {author?.display_name ?? "Desconocido"}
+                </span>
               </span>
-              <div className="flex items-center gap-1">
+              <div className="flex shrink-0 items-center gap-1">
                 {review.nota != null && (
                   <span className="rounded-full bg-secondary px-2.5 py-0.5 text-sm font-semibold text-secondary-foreground">
                     {review.nota}/10

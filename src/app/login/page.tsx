@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <main className="relative flex min-h-screen items-center justify-center px-4 py-12">
+    <main className="relative flex min-h-dvh items-center justify-center overflow-y-auto px-4 py-12 pt-[max(3rem,env(safe-area-inset-top))] pb-[max(5rem,env(safe-area-inset-bottom))]">
       <Image
         src={murnau}
         alt="Murnau, casas en el Obermarkt — Wassily Kandinsky, 1908"
@@ -20,7 +20,7 @@ export default function LoginPage() {
         className="object-cover"
       />
       <div className="absolute inset-0 bg-black/55" />
-      <p className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-6 py-4 text-center text-xs text-white/70 italic">
+      <p className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-6 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-center text-xs text-white/70 italic">
         Wassily Kandinsky — Murnau, casas en el Obermarkt (1908)
       </p>
 

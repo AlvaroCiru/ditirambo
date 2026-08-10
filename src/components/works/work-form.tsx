@@ -48,25 +48,27 @@ export function WorkForm({ work }: { work?: Work }) {
           defaultValue={work?.titulo}
         />
       </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="autor_creador">Autor / creador</Label>
-        <Input
-          id="autor_creador"
-          name="autor_creador"
-          maxLength={200}
-          defaultValue={work?.autor_creador ?? undefined}
-        />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="anio">Año</Label>
-        <Input
-          id="anio"
-          name="anio"
-          type="number"
-          min={1}
-          max={2999}
-          defaultValue={work?.anio ?? undefined}
-        />
+      <div className="grid gap-4 sm:grid-cols-[1fr_7rem]">
+        <div className="flex min-w-0 flex-col gap-2">
+          <Label htmlFor="autor_creador">Autor / creador</Label>
+          <Input
+            id="autor_creador"
+            name="autor_creador"
+            maxLength={200}
+            defaultValue={work?.autor_creador ?? undefined}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="anio">Año</Label>
+          <Input
+            id="anio"
+            name="anio"
+            type="number"
+            min={1}
+            max={2999}
+            defaultValue={work?.anio ?? undefined}
+          />
+        </div>
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="imagen">

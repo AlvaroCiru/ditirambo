@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { STATUS_LABELS } from "@/lib/categories";
 import { CategoryBadge } from "./category-badge";
@@ -20,16 +21,17 @@ export function WorkCard({ work }: { work: Work }) {
         </span>
       </div>
       {work.imagen_url && (
-        <div className="aspect-square w-full overflow-hidden rounded-md bg-background">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+        <div className="relative aspect-square w-full overflow-hidden rounded-md bg-background">
+          <Image
             src={work.imagen_url}
             alt=""
-            className="h-full w-full object-contain"
+            fill
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="object-contain"
           />
         </div>
       )}
-      <h3 className="font-heading text-lg leading-snug group-hover:underline">
+      <h3 className="min-w-0 break-words font-heading text-lg leading-snug group-hover:underline">
         {work.titulo}
       </h3>
       {(work.autor_creador || work.anio) && (

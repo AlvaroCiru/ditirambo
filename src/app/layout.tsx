@@ -1,16 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Fraunces } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
+import { Geist, Fraunces } from "next/font/google";
 import { PALETTE } from "@/lib/palette";
 import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -32,7 +26,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: PALETTE.uiBackground,
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: PALETTE.uiPrimary,
 };
 
 export default function RootLayout({
@@ -43,11 +40,10 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
-        <Toaster />
       </body>
     </html>
   );
