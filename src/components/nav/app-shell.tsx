@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useState,
   useSyncExternalStore,
   type ReactNode,
@@ -52,8 +53,20 @@ export function AppShell({
   );
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileOpen]);
+
   const nav = (showLabels: boolean) => (
-    <nav aria-label="Módulos" className="flex flex-col gap-1 px-2 py-2">
+    <nav
+      aria-label="Módulos"
+      className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 py-2"
+    >
       {APP_MODULES.map((mod) => {
         const Icon = mod.icon;
         const active = mod.match.some(
@@ -68,7 +81,7 @@ export function AppShell({
             title={mod.label}
             onClick={() => setMobileOpen(false)}
             className={cn(
-              "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+              "flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
               showLabels ? "" : "justify-center px-2",
               active
                 ? "bg-accent text-accent-foreground"
@@ -85,22 +98,20 @@ export function AppShell({
 
   return (
     <div className="flex min-h-dvh flex-col md:flex-row">
-      <div className="border-b border-border md:hidden">
+      {/* Cabecera móvil */}
+      <div className="sticky top-0 z-30 border-b border-border bg-card md:hidden">
         <div className="flex items-center justify-between gap-3 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
           <div className="flex min-w-0 items-center gap-2">
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-label="Abrir menú"
               aria-expanded={mobileOpen}
-              onClick={() => setMobileOpen((open) => !open)}
+              aria-controls="menu-lateral-movil"
+              onClick={() => setMobileOpen(true)}
             >
-              {mobileOpen ? (
-                <X className="size-4" />
-              ) : (
-                <Menu className="size-4" />
-              )}
+              <Menu className="size-4" />
             </Button>
             <Link href="/resenas" className="font-heading text-xl italic">
               Ditirambo
@@ -108,13 +119,63 @@ export function AppShell({
           </div>
           <div className="flex min-w-0 items-center gap-3">{profileSlot}</div>
         </div>
-        {mobileOpen && (
-          <div className="border-t border-border bg-card pb-2">
-            {nav(true)}
-          </div>
-        )}
       </div>
 
+      {/* Cajón lateral móvil */}
+      <div
+        className={cn(
+          "fixed inset-0 z-50 md:hidden",
+          mobileOpen ? "pointer-events-auto" : "pointer-events-none",
+        )}
+      >
+        <button
+          type="button"
+          aria-label="Cerrar menú"
+          className={cn(
+            "absolute inset-0 bg-black/55 transition-opacity duration-200",
+            mobileOpen ? "opacity-100" : "opacity-0",
+          )}
+          onClick={() => setMobileOpen(false)}
+        />
+        <aside
+          id="menu-lateral-movil"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menú de la aplicación"
+          className={cn(
+            "absolute inset-y-0 left-0 flex w-[min(18rem,85vw)] flex-col border-r border-border bg-card shadow-xl transition-transform duration-200 ease-out",
+            "pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]",
+            mobileOpen ? "translate-x-0" : "-translate-x-full",
+          )}
+        >
+          <div className="flex items-start justify-between gap-2 border-b border-border px-3 py-4">
+            <div className="min-w-0">
+              <Link
+                href="/resenas"
+                className="font-heading text-xl italic"
+                onClick={() => setMobileOpen(false)}
+              >
+                Ditirambo
+              </Link>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Espacios compartidos
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Cerrar menú"
+              onClick={() => setMobileOpen(false)}
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+          {nav(true)}
+        </aside>
+      </div>
+
+      {/* Barra lateral escritorio */}
       <aside
         className={cn(
           "hidden shrink-0 flex-col border-r border-border bg-card pt-[env(safe-area-inset-top)] transition-[width] duration-200 md:flex",
