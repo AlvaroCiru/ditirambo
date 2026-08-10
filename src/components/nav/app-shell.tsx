@@ -65,7 +65,7 @@ export function AppShell({
   const nav = (showLabels: boolean) => (
     <nav
       aria-label="Módulos"
-      className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 py-2"
+      className="flex flex-col gap-1 px-2 py-2"
     >
       {APP_MODULES.map((mod) => {
         const Icon = mod.icon;
@@ -97,7 +97,7 @@ export function AppShell({
   );
 
   return (
-    <div className="flex min-h-dvh flex-col md:flex-row">
+    <div className="flex min-h-dvh flex-col md:flex-row md:items-start">
       {/* Cabecera móvil */}
       <div className="sticky top-0 z-30 border-b border-border bg-card md:hidden">
         <div className="flex items-center justify-between gap-3 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
@@ -175,7 +175,7 @@ export function AppShell({
         </aside>
       </div>
 
-      {/* Barra lateral escritorio */}
+      {/* Barra lateral escritorio: altura propia, hace scroll con la página */}
       <aside
         className={cn(
           "hidden shrink-0 flex-col border-r border-border bg-card pt-[env(safe-area-inset-top)] transition-[width] duration-200 md:flex",
