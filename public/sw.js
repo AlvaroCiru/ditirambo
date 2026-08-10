@@ -1,5 +1,13 @@
 /* Service worker mínimo: solo avisos. No cachea la app (evita interferir con Next). */
 
+function resolveUrl(path) {
+  try {
+    return new URL(path || "/resenas", self.location.origin).href;
+  } catch {
+    return self.location.origin + "/resenas";
+  }
+}
+
 self.addEventListener("push", (event) => {
   let payload = {
     title: "Ditirambo",
@@ -20,21 +28,21 @@ self.addEventListener("push", (event) => {
       body: payload.body,
       icon: "/icon-192",
       badge: "/icon-192",
-      data: { url: payload.url || "/resenas" },
+      data: { url: resolveUrl(payload.url) },
     }),
   );
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = event.notification.data?.url || "/resenas";
+  const target = resolveUrl(event.notification.data?.url);
 
   event.waitUntil(
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((windowClients) => {
         for (const client of windowClients) {
-          if ("focus" in client) {
+          if (client.url.startsWith(self.location.origin) && "focus" in client) {
             client.navigate(target);
             return client.focus();
           }
