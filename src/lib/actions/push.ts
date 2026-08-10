@@ -2,7 +2,12 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { getAuthedUser } from "@/lib/dal";
-import { getVapidPublicKey, isAvisosWebEnabled } from "@/lib/push/config";
+import {
+  getAvisosConfigIssue,
+  getVapidPublicKey,
+  isAvisosWebEnabled,
+  type AvisosConfigIssue,
+} from "@/lib/push/config";
 import { sendAvisosToUser } from "@/lib/push/send";
 
 export interface PushSettingsState {
@@ -10,11 +15,13 @@ export interface PushSettingsState {
   configured: boolean;
   vapidPublicKey: string | null;
   hasSubscription: boolean;
+  issue: AvisosConfigIssue;
 }
 
 export async function getPushSettings(): Promise<PushSettingsState> {
   const user = await getAuthedUser();
-  const configured = isAvisosWebEnabled();
+  const issue = getAvisosConfigIssue();
+  const configured = issue === null;
   const vapidPublicKey = getVapidPublicKey();
 
   if (!configured) {
@@ -23,6 +30,7 @@ export async function getPushSettings(): Promise<PushSettingsState> {
       configured: false,
       vapidPublicKey: null,
       hasSubscription: false,
+      issue,
     };
   }
 
@@ -37,6 +45,7 @@ export async function getPushSettings(): Promise<PushSettingsState> {
     configured: true,
     vapidPublicKey,
     hasSubscription: (count ?? 0) > 0,
+    issue: null,
   };
 }
 

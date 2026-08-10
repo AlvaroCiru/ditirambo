@@ -22,14 +22,26 @@ export function PushSettings({ initial }: { initial: PushSettingsState }) {
   const [pending, startTransition] = useTransition();
 
   if (!initial.configured) {
+    const hint =
+      initial.issue === "flag_apagado"
+        ? "La variable NEXT_PUBLIC_AVISOS_WEB está apagada (ponla a 1)."
+        : initial.issue === "flag_ausente"
+          ? "Falta NEXT_PUBLIC_AVISOS_WEB=1 en Vercel, o el último despliegue no la recogió (redeploy sin caché)."
+          : initial.issue === "falta_clave_publica"
+            ? "Falta NEXT_PUBLIC_VAPID_PUBLIC_KEY en el despliegue."
+            : initial.issue === "falta_clave_privada"
+              ? "Falta VAPID_PRIVATE_KEY en el despliegue."
+              : initial.issue === "falta_asunto"
+                ? "Falta VAPID_SUBJECT en el despliegue."
+                : "Revisa las variables de avisos en Vercel y vuelve a desplegar sin caché.";
+
     return (
       <section className="rounded-xl border border-border bg-card p-5">
         <h2 className="font-heading text-lg">Avisos</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Los avisos no están activos en este entorno. Se pueden encender con la
-          variable de configuración correspondiente, o apagar sin quitar el
-          resto de la aplicación.
+          Los avisos no están activos en este entorno.
         </p>
+        <p className="mt-2 text-sm text-muted-foreground">{hint}</p>
       </section>
     );
   }

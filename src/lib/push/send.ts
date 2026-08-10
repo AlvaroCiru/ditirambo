@@ -2,7 +2,12 @@ import "server-only";
 
 import webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isAvisosWebEnabled } from "@/lib/push/config";
+import {
+  getVapidPrivateKey,
+  getVapidPublicKey,
+  getVapidSubject,
+  isAvisosWebEnabled,
+} from "@/lib/push/config";
 
 export interface AvisoPayload {
   title: string;
@@ -11,11 +16,11 @@ export interface AvisoPayload {
 }
 
 function configureWebPush() {
-  webpush.setVapidDetails(
-    process.env.VAPID_SUBJECT!,
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-    process.env.VAPID_PRIVATE_KEY!,
-  );
+  const subject = getVapidSubject();
+  const publicKey = getVapidPublicKey();
+  const privateKey = getVapidPrivateKey();
+  if (!subject || !publicKey || !privateKey) return;
+  webpush.setVapidDetails(subject, publicKey, privateKey);
 }
 
 /** Envío best-effort: nunca lanza al llamador de negocio. */
