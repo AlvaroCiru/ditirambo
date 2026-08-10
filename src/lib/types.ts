@@ -43,3 +43,12 @@ export interface Profile {
 export interface WorkWithReviews extends Work {
   reviews: Review[];
 }
+
+export interface DevNote {
+  id: string;
+  titulo: string;
+  cuerpo: string;
+  creado_por: string;
+  creado_en: string;
+  actualizado_en: string;
+}

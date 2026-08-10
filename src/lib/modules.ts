@@ -1,4 +1,9 @@
-import { Star, type LucideIcon } from "lucide-react";
+import {
+  Star,
+  CalendarDays,
+  NotebookPen,
+  type LucideIcon,
+} from "lucide-react";
 
 /**
  * Módulos de primer nivel en la barra lateral.
@@ -20,6 +25,20 @@ export const APP_MODULES: AppModule[] = [
     href: "/resenas",
     icon: Star,
     match: ["/resenas"],
+  },
+  {
+    id: "citas",
+    label: "Planificador de citas",
+    href: "/citas",
+    icon: CalendarDays,
+    match: ["/citas"],
+  },
+  {
+    id: "notas",
+    label: "Notas de desarrollo",
+    href: "/notas",
+    icon: NotebookPen,
+    match: ["/notas"],
   },
 ];
 
