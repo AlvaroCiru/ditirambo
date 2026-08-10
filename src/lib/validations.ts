@@ -49,7 +49,7 @@ export const reviewSchema = z.object({
     })
     .refine(
       (v) => v === undefined || isValidRating(v),
-      "La nota debe estar entre 0.5 y 5, en medios puntos.",
+      "La nota debe estar entre 0.5 y 10, en medios puntos.",
     ),
   texto: z
     .string()

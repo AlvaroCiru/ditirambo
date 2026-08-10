@@ -17,13 +17,18 @@ export interface WorksFilter {
   estado?: WorkStatus;
 }
 
-export async function getWorks(filter: WorksFilter = {}): Promise<Work[]> {
+export interface WorkListItem extends Work {
+  /** Media de notas de reseñas (escala /10), si hay alguna. */
+  avgNota: number | null;
+}
+
+export async function getWorks(filter: WorksFilter = {}): Promise<WorkListItem[]> {
   await getAuthedUser();
   const supabase = await createClient();
 
   let query = supabase
     .from("works")
-    .select(WORK_LIST_COLUMNS)
+    .select(`${WORK_LIST_COLUMNS}, reviews(nota)`)
     .order("creado_en", { ascending: false });
 
   if (filter.tipo) query = query.eq("tipo", filter.tipo);
@@ -37,7 +42,20 @@ export async function getWorks(filter: WorksFilter = {}): Promise<Work[]> {
 
   const { data, error } = await query;
   if (error) throw error;
-  return (data ?? []) as Work[];
+
+  return (data ?? []).map((row) => {
+    const { reviews, ...work } = row as Work & {
+      reviews: { nota: number | string | null }[] | null;
+    };
+    const notas = (reviews ?? [])
+      .map((r) => Number(r.nota))
+      .filter((n) => Number.isFinite(n));
+    const avgNota =
+      notas.length > 0
+        ? Math.round((notas.reduce((a, b) => a + b, 0) / notas.length) * 2) / 2
+        : null;
+    return { ...(work as Work), avgNota };
+  });
 }
 
 export async function getWork(id: string): Promise<Work | null> {

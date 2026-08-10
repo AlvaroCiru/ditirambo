@@ -8,6 +8,7 @@ import {
   ratingFillPercent,
   RATING_MAX,
   RATING_STEP,
+  STAR_COUNT,
 } from "@/lib/rating";
 
 function StarGlyph({ className }: { className?: string }) {
@@ -36,8 +37,13 @@ function StarsTrack({
 }) {
   const fill = Math.min(100, Math.max(0, fillPercent));
   const row = (tone: string, key: string) => (
-    <span className={cn("flex h-full w-[5.75em] items-center justify-between", tone)}>
-      {Array.from({ length: RATING_MAX }, (_, i) => (
+    <span
+      className={cn(
+        "flex h-full w-[5.75em] items-center justify-between",
+        tone,
+      )}
+    >
+      {Array.from({ length: STAR_COUNT }, (_, i) => (
         <StarGlyph key={`${key}-${i}`} />
       ))}
     </span>
@@ -67,7 +73,7 @@ function StarsTrack({
   );
 }
 
-/** Solo lectura: relleno continuo tipo Letterboxd. */
+/** Solo lectura: 5 estrellas visuales a partir de nota /10. */
 export function StarRating({
   value,
   size = "md",
@@ -85,7 +91,7 @@ export function StarRating({
   return (
     <span
       className={cn("inline-flex items-center gap-1.5", className)}
-      title={`${formatRating(n)} de ${RATING_MAX}`}
+      title={`${formatRating(n)}/${RATING_MAX}`}
     >
       <StarsTrack
         fillPercent={ratingFillPercent(n)}
@@ -98,14 +104,14 @@ export function StarRating({
             size === "sm" ? "text-xs" : "text-sm",
           )}
         >
-          {formatRating(n)}
+          {formatRating(n)}/{RATING_MAX}
         </span>
       )}
     </span>
   );
 }
 
-/** Entrada: medias estrellas (0.5–5) con preview al pasar el ratón. */
+/** Entrada sobre 10; las estrellas son la representación visual. */
 export function StarRatingInput({
   name,
   defaultValue,
@@ -149,7 +155,7 @@ export function StarRatingInput({
                 key={stepValue}
                 type="button"
                 className="h-full flex-1 cursor-pointer border-0 bg-transparent p-0"
-                aria-label={`${formatRating(stepValue)} estrellas`}
+                aria-label={`${formatRating(stepValue)} de ${RATING_MAX}`}
                 onMouseEnter={() => setHover(stepValue)}
                 onFocus={() => setHover(stepValue)}
                 onBlur={() => setHover(null)}
@@ -165,7 +171,7 @@ export function StarRatingInput({
       </div>
       <p className="text-sm text-muted-foreground">
         {value == null ? (
-          "Sin nota · pulsa las estrellas (medios permitidos)"
+          "Sin nota · pulsa las estrellas (medios puntos)"
         ) : (
           <>
             <span className="font-semibold text-accent">

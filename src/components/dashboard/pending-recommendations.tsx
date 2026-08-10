@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { UserAvatar } from "@/components/profile/user-avatar";
+import { StarRating } from "@/components/works/star-rating";
 import type { PendingRecommendation } from "@/lib/queries";
 import type { Profile } from "@/lib/types";
 
@@ -34,13 +35,14 @@ export function PendingRecommendations({
                 avatarUrl={from?.avatar_url ?? null}
                 size="sm"
               />
-              <div className="flex min-w-0 flex-col">
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <span className="font-heading line-clamp-2 text-base leading-snug break-words">
                   {work.titulo}
                 </span>
                 <span className="truncate text-xs text-muted-foreground">
                   Te lo recomendó {from?.display_name ?? "tu pareja"}
                 </span>
+                <StarRating value={fromReview.nota} size="sm" />
               </div>
             </Link>
           );

@@ -2,9 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { STATUS_LABELS } from "@/lib/categories";
 import { CategoryBadge } from "./category-badge";
-import type { Work } from "@/lib/types";
+import { StarRating } from "./star-rating";
+import type { WorkListItem } from "@/lib/queries";
 
-export function WorkCard({ work }: { work: Work }) {
+export function WorkCard({ work }: { work: WorkListItem }) {
   return (
     <Link
       href={`/resenas/obras/${work.id}`}
@@ -39,6 +40,7 @@ export function WorkCard({ work }: { work: Work }) {
           {[work.autor_creador, work.anio].filter(Boolean).join(" · ")}
         </p>
       )}
+      <StarRating value={work.avgNota} size="sm" />
     </Link>
   );
 }
