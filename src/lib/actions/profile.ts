@@ -117,5 +117,6 @@ export async function updateProfile(
   }
 
   revalidatePath("/", "layout");
+  revalidatePath("/reseñas", "layout");
   return { success: true };
 }

@@ -11,10 +11,14 @@
   --font-mono: var(--font-sans);
   --font-heading: var(--font-heading);
   --color-category-pelicula: var(--category-pelicula);
+  --color-category-serie: var(--category-serie);
+  --color-category-anime: var(--category-anime);
   --color-category-libro: var(--category-libro);
   --color-category-album_musica: var(--category-album_musica);
+  --color-category-concierto: var(--category-concierto);
   --color-category-opera: var(--category-opera);
   --color-category-arte: var(--category-arte);
+  --color-category-videojuego: var(--category-videojuego);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -96,10 +100,14 @@
 
   /* Separación visual por categoría (ver src/lib/categories.ts) */
   --category-pelicula: #7196c9;
+  --category-serie: #5b9fd4;
+  --category-anime: #d96b9a;
   --category-libro: #d9784f;
   --category-album_musica: #e0c060;
+  --category-concierto: #c47a3a;
   --category-opera: #8a6bb0;
   --category-arte: #6fae86;
+  --category-videojuego: #4ec9b0;
 }
 
 @layer base {

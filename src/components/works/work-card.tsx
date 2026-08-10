@@ -7,7 +7,7 @@ import type { Work } from "@/lib/types";
 export function WorkCard({ work }: { work: Work }) {
   return (
     <Link
-      href={`/obras/${work.id}`}
+      href={`/reseñas/obras/${work.id}`}
       className="group flex flex-col gap-2 rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
       style={{
         borderLeftColor: `var(--category-${work.tipo})`,

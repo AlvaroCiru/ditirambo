@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { getAuthedUser, getProfiles } from "@/lib/dal";
-import { MainNav } from "@/components/nav/main-nav";
+import { AppSidebar } from "@/components/nav/app-sidebar";
 import { LogoutButton } from "@/components/nav/logout-button";
 import { UserAvatar } from "@/components/profile/user-avatar";
 
@@ -31,28 +31,35 @@ export default async function ProtectedLayout({
   );
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="border-b border-border bg-card pt-[env(safe-area-inset-top)]">
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center justify-between gap-4">
-            <Link href="/" className="shrink-0 font-heading text-xl italic">
-              Ditirambo
-            </Link>
-            <div className="flex min-w-0 items-center gap-3 sm:hidden">
-              {profileLink}
-              <LogoutButton />
-            </div>
-          </div>
-          <MainNav />
-          <div className="hidden min-w-0 items-center gap-3 sm:flex">
+    <div className="flex min-h-dvh flex-col md:flex-row">
+      <div className="border-b border-border md:hidden">
+        <div className="flex items-center justify-between gap-3 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+          <Link href="/reseñas" className="font-heading text-xl italic">
+            Ditirambo
+          </Link>
+          <div className="flex min-w-0 items-center gap-3">
             {profileLink}
             <LogoutButton />
           </div>
         </div>
-      </header>
-      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        {children}
-      </main>
+        <AppSidebar />
+      </div>
+
+      <div className="hidden md:flex">
+        <AppSidebar />
+      </div>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="hidden border-b border-border bg-card md:block md:pt-[env(safe-area-inset-top)]">
+          <div className="flex w-full items-center justify-end gap-3 px-6 py-3">
+            {profileLink}
+            <LogoutButton />
+          </div>
+        </header>
+        <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

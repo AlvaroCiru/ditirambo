@@ -26,7 +26,7 @@ export default async function ObrasPage({
           size="sm"
           nativeButton={false}
           render={
-            <Link href="/obras/nueva">
+            <Link href="/reseñas/obras/nueva">
               <Plus className="size-4" />
               Añadir
             </Link>

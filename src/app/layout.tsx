@@ -17,7 +17,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "Ditirambo",
   description:
-    "Reseñas y recomendaciones privadas de cine, libros, música, ópera y arte.",
+    "Reseñas y recomendaciones privadas de cine, series, anime, libros, música, conciertos, ópera, arte y videojuegos.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

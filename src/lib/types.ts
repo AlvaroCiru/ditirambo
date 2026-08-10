@@ -1,4 +1,13 @@
-export type WorkType = "pelicula" | "libro" | "album_musica" | "opera" | "arte";
+export type WorkType =
+  | "pelicula"
+  | "serie"
+  | "anime"
+  | "libro"
+  | "album_musica"
+  | "concierto"
+  | "opera"
+  | "arte"
+  | "videojuego";
 
 export type WorkStatus = "pendiente" | "en_curso" | "completado";
 

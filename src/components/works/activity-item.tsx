@@ -18,7 +18,7 @@ export function ActivityItem({
 
   return (
     <Link
-      href={`/obras/${item.work.id}`}
+      href={`/reseñas/obras/${item.work.id}`}
       className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
       style={{
         borderLeftColor: `var(--category-${item.work.tipo})`,

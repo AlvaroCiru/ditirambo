@@ -3,10 +3,14 @@ import type { WorkStatus, WorkType } from "./types";
 
 export const WORK_TYPE_VALUES = [
   "pelicula",
+  "serie",
+  "anime",
   "libro",
   "album_musica",
+  "concierto",
   "opera",
   "arte",
+  "videojuego",
 ] as const satisfies readonly WorkType[];
 
 export const WORK_STATUS_VALUES = [

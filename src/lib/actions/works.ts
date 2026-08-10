@@ -81,9 +81,9 @@ export async function createWork(
     return { error: "No se ha podido guardar la obra." };
   }
 
-  revalidatePath("/obras");
-  revalidatePath("/");
-  redirect(`/obras/${data.id}`);
+  revalidatePath("/reseñas/obras");
+  revalidatePath("/reseñas");
+  redirect(`/reseñas/obras/${data.id}`);
 }
 
 export async function updateWork(
@@ -155,10 +155,10 @@ export async function updateWork(
     await supabase.storage.from("covers").remove([previousCoverPath]);
   }
 
-  revalidatePath(`/obras/${workId}`);
-  revalidatePath("/obras");
-  revalidatePath("/");
-  redirect(`/obras/${workId}`);
+  revalidatePath(`/reseñas/obras/${workId}`);
+  revalidatePath("/reseñas/obras");
+  revalidatePath("/reseñas");
+  redirect(`/reseñas/obras/${workId}`);
 }
 
 export async function updateWorkStatus(workId: string, estado: string) {
@@ -173,8 +173,8 @@ export async function updateWorkStatus(workId: string, estado: string) {
 
   if (error) throw new Error("No se ha podido actualizar el estado.");
 
-  revalidatePath(`/obras/${workId}`);
-  revalidatePath("/obras");
+  revalidatePath(`/reseñas/obras/${workId}`);
+  revalidatePath("/reseñas/obras");
 }
 
 export async function deleteWork(workId: string) {
@@ -185,7 +185,7 @@ export async function deleteWork(workId: string) {
 
   if (error) throw new Error("No se ha podido borrar la obra.");
 
-  revalidatePath("/obras");
-  revalidatePath("/");
-  redirect("/obras");
+  revalidatePath("/reseñas/obras");
+  revalidatePath("/reseñas");
+  redirect("/reseñas/obras");
 }

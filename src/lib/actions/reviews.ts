@@ -46,8 +46,8 @@ export async function upsertReview(
     return { error: "No se ha podido guardar la reseña." };
   }
 
-  revalidatePath(`/obras/${workId}`);
-  revalidatePath("/");
+  revalidatePath(`/reseñas/obras/${workId}`);
+  revalidatePath("/reseñas");
   return { success: true };
 }
 
@@ -59,6 +59,6 @@ export async function deleteReview(workId: string, reviewId: string) {
 
   if (error) throw new Error("No se ha podido borrar la reseña.");
 
-  revalidatePath(`/obras/${workId}`);
-  revalidatePath("/");
+  revalidatePath(`/reseñas/obras/${workId}`);
+  revalidatePath("/reseñas");
 }

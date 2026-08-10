@@ -25,8 +25,12 @@ import type { WorkType } from "./types";
 
 export const CATEGORY_COLOR: Record<WorkType, string> = {
   pelicula: PALETTE.indigo,
+  serie: "#5b9fd4",
+  anime: "#d96b9a",
   libro: PALETTE.terracotta,
   album_musica: PALETTE.ochre,
+  concierto: "#c47a3a",
   opera: PALETTE.violet,
   arte: PALETTE.forest,
+  videojuego: "#4ec9b0",
 };
