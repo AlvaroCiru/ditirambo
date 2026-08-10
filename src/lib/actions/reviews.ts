@@ -2,12 +2,49 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { getAuthedUser } from "@/lib/dal";
+import { getAuthedUser, getProfiles } from "@/lib/dal";
 import { reviewSchema } from "@/lib/validations";
+import { sendAvisosToUser } from "@/lib/push/send";
+import { isAvisosWebEnabled } from "@/lib/push/config";
 
 export interface ReviewFormState {
   error?: string;
   success?: boolean;
+}
+
+async function avisosTrasResena(options: {
+  workId: string;
+  authorId: string;
+  partnerId: string | null;
+  recomendado: boolean;
+}) {
+  if (!isAvisosWebEnabled() || !options.partnerId) return;
+
+  const supabase = await createClient();
+  const [{ data: work }, profiles] = await Promise.all([
+    supabase.from("works").select("titulo").eq("id", options.workId).maybeSingle(),
+    getProfiles(),
+  ]);
+
+  const author = profiles.find((p) => p.id === options.authorId);
+  const titulo = work?.titulo ?? "una obra";
+  const nombre = author?.display_name ?? "Tu pareja";
+  const url = `/resenas/obras/${options.workId}`;
+
+  if (options.recomendado) {
+    await sendAvisosToUser(options.partnerId, {
+      title: "Nueva recomendación",
+      body: `${nombre} te ha recomendado «${titulo}».`,
+      url,
+    });
+    return;
+  }
+
+  await sendAvisosToUser(options.partnerId, {
+    title: "Nueva reseña",
+    body: `${nombre} ha reseñado «${titulo}».`,
+    url,
+  });
 }
 
 export async function upsertReview(
@@ -29,14 +66,14 @@ export async function upsertReview(
   }
 
   const supabase = await createClient();
+  const recomendado = parsed.data.recomendado === "si";
   const { error } = await supabase.from("reviews").upsert(
     {
       work_id: workId,
       user_id: user.id,
       nota: parsed.data.nota ?? null,
       texto: parsed.data.texto ?? null,
-      recomendado_para:
-        parsed.data.recomendado === "si" ? partnerId : null,
+      recomendado_para: recomendado ? partnerId : null,
       actualizado_en: new Date().toISOString(),
     },
     { onConflict: "work_id,user_id" },
@@ -45,6 +82,13 @@ export async function upsertReview(
   if (error) {
     return { error: "No se ha podido guardar la reseña." };
   }
+
+  void avisosTrasResena({
+    workId,
+    authorId: user.id,
+    partnerId,
+    recomendado,
+  });
 
   revalidatePath(`/resenas/obras/${workId}`);
   revalidatePath("/resenas");

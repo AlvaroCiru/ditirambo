@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Ditirambo",
     description:
       "Reseñas y recomendaciones privadas de cine, series, anime, libros, música, conciertos, ópera, arte y videojuegos.",
-    start_url: "/",
+    start_url: "/resenas",
     display: "standalone",
     background_color: PALETTE.uiBackground,
     theme_color: PALETTE.uiPrimary,
