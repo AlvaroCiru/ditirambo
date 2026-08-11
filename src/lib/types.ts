@@ -42,12 +42,46 @@ export interface Profile {
   es_admin: boolean;
 }
 
+export type CitaCategoria =
+  | "excursiones"
+  | "operas"
+  | "museos"
+  | "conciertos"
+  | "viajes"
+  | "cine"
+  | "restaurantes"
+  | "hotel";
+
+export type CitaEstado =
+  | "propuesta"
+  | "programada"
+  | "finalizada"
+  | "rechazada";
+
+export interface Cita {
+  id: string;
+  titulo: string;
+  descripcion: string | null;
+  categoria: CitaCategoria;
+  ubicacion: string;
+  inicio_en: string;
+  fin_en: string;
+  imagen_url: string | null;
+  estado: CitaEstado;
+  creado_por: string;
+  aprobado_por: string | null;
+  creado_en: string;
+  actualizado_en: string;
+}
+
 export type NotificationTemplateKey =
   | "review_new"
   | "review_recommendation"
   | "review_shared"
   | "app_update"
-  | "push_test";
+  | "push_test"
+  | "cita_propuesta"
+  | "cita_aceptada";
 
 export interface NotificationTemplate {
   id: string;
