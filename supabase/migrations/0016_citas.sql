@@ -9,6 +9,7 @@ create type public.cita_categoria as enum (
   'cine',
   'restaurantes',
   'hotel',
+  'bienestar',
   'otros'
 );
 

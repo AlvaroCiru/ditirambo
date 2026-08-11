@@ -72,6 +72,7 @@ export const CITA_CATEGORIA_VALUES = [
   "cine",
   "restaurantes",
   "hotel",
+  "bienestar",
   "otros",
 ] as const satisfies readonly CitaCategoria[];
 

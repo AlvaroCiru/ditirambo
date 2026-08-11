@@ -27,6 +27,7 @@
   --color-cita-cine: var(--cita-cine);
   --color-cita-restaurantes: var(--cita-restaurantes);
   --color-cita-hotel: var(--cita-hotel);
+  --color-cita-bienestar: var(--cita-bienestar);
   --color-cita-otros: var(--cita-otros);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -127,6 +128,7 @@
   --cita-cine: #d96b9a;
   --cita-restaurantes: #d9784f;
   --cita-hotel: #e0c060;
+  --cita-bienestar: #7ec8a3;
   --cita-otros: #96a5c2;
 }
 

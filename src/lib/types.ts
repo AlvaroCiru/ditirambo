@@ -51,6 +51,7 @@ export type CitaCategoria =
   | "cine"
   | "restaurantes"
   | "hotel"
+  | "bienestar"
   | "otros";
 
 export type CitaEstado =
