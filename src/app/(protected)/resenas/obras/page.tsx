@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { getProfiles } from "@/lib/dal";
 import { getWorks } from "@/lib/queries";
 import { WorksFilters } from "@/components/works/works-filters";
 import { WorkCard } from "@/components/works/work-card";
@@ -12,11 +13,14 @@ export default async function ObrasPage({
   searchParams: Promise<{ q?: string; tipo?: string; estado?: string }>;
 }) {
   const params = await searchParams;
-  const works = await getWorks({
-    q: params.q,
-    tipo: params.tipo as WorkType | undefined,
-    estado: params.estado as WorkStatus | undefined,
-  });
+  const [works, profiles] = await Promise.all([
+    getWorks({
+      q: params.q,
+      tipo: params.tipo as WorkType | undefined,
+      estado: params.estado as WorkStatus | undefined,
+    }),
+    getProfiles(),
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,7 +45,7 @@ export default async function ObrasPage({
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {works.map((work) => (
-            <WorkCard key={work.id} work={work} />
+            <WorkCard key={work.id} work={work} profiles={profiles} />
           ))}
         </div>
       )}
