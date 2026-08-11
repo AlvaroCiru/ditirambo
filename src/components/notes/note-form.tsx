@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { NOTE_PRIORITY_LABELS, NOTE_PRIORITY_ORDER } from "@/lib/notes-meta";
 
 const initialState: NoteFormState = {};
 
@@ -31,7 +39,7 @@ export function NoteForm() {
       <div>
         <h2 className="font-heading text-lg">Nueva nota</h2>
         <p className="text-xs text-muted-foreground">
-          Apunta ideas, mejoras o cosas que falten por hacer.
+          Apunta ideas o tareas; luego las mueves en el tablero.
         </p>
       </div>
       <div className="flex flex-col gap-2">
@@ -47,6 +55,21 @@ export function NoteForm() {
           maxLength={8000}
           placeholder="Qué queremos añadir o cambiar…"
         />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="prioridad">Prioridad</Label>
+        <Select name="prioridad" defaultValue="media">
+          <SelectTrigger id="prioridad" className="w-fit">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {NOTE_PRIORITY_ORDER.map((priority) => (
+              <SelectItem key={priority} value={priority}>
+                {NOTE_PRIORITY_LABELS[priority]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       {state?.error && (
         <p role="alert" className="text-sm text-destructive">

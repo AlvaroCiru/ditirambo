@@ -44,10 +44,15 @@ export interface WorkWithReviews extends Work {
   reviews: Review[];
 }
 
+export type DevNoteStatus = "idea" | "por_hacer" | "en_curso" | "hecho";
+export type DevNotePriority = "baja" | "media" | "alta";
+
 export interface DevNote {
   id: string;
   titulo: string;
   cuerpo: string;
+  estado: DevNoteStatus;
+  prioridad: DevNotePriority;
   creado_por: string;
   creado_en: string;
   actualizado_en: string;

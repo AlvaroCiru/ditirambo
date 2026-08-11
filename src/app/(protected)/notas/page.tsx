@@ -8,19 +8,8 @@ export default async function NotasPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="font-heading text-2xl">Notas de desarrollo</h1>
-        <p className="text-sm text-muted-foreground">
-          Apuntes sobre futuras actualizaciones y funcionalidades de la página.
-        </p>
-      </div>
-
       <NoteForm />
-
-      <section className="flex flex-col gap-4">
-        <h2 className="font-heading text-xl">Cuaderno</h2>
-        <NoteList notes={notes} profiles={profiles} />
-      </section>
+      <NoteList notes={notes} profiles={profiles} />
     </div>
   );
 }
