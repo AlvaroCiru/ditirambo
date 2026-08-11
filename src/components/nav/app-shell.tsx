@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
-import { APP_MODULES } from "@/lib/modules";
+import { modulesForUser, type AppModule } from "@/lib/modules";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -41,9 +41,11 @@ function setSidebarExpanded(next: boolean) {
 export function AppShell({
   profileSlot,
   children,
+  isAdmin = false,
 }: {
   profileSlot: ReactNode;
   children: ReactNode;
+  isAdmin?: boolean;
 }) {
   const pathname = usePathname();
   const expanded = useSyncExternalStore(
@@ -52,6 +54,7 @@ export function AppShell({
     getExpandedServerSnapshot,
   );
   const [mobileOpen, setMobileOpen] = useState(false);
+  const modules: AppModule[] = modulesForUser(isAdmin);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -67,7 +70,7 @@ export function AppShell({
       aria-label="Módulos"
       className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 py-2"
     >
-      {APP_MODULES.map((mod) => {
+      {modules.map((mod) => {
         const Icon = mod.icon;
         const active = mod.match.some(
           (prefix) =>

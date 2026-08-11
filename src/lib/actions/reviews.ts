@@ -4,8 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getAuthedUser, getProfiles } from "@/lib/dal";
 import { reviewSchema } from "@/lib/validations";
-import { sendAvisosToUser } from "@/lib/push/send";
 import { isAvisosWebEnabled } from "@/lib/push/config";
+import { sendTemplatedAviso } from "@/lib/push/templates";
 
 export interface ReviewFormState {
   error?: string;
@@ -31,28 +31,18 @@ async function avisosTrasResena(options: {
   const titulo = work?.titulo ?? "una obra";
   const nombre = author?.display_name ?? "Tu pareja";
   const url = `/resenas/obras/${options.workId}`;
+  const vars = { nombre, titulo };
 
-  if (options.recomendado) {
-    await sendAvisosToUser(options.partnerId, {
-      title: "Nueva recomendación",
-      body: `${nombre} te ha recomendado «${titulo}».`,
-      url,
-    });
-    return;
-  }
+  const key = options.recomendado
+    ? "review_recommendation"
+    : options.paraCompartir
+      ? "review_shared"
+      : "review_new";
 
-  if (options.paraCompartir) {
-    await sendAvisosToUser(options.partnerId, {
-      title: "Para compartir",
-      body: `${nombre} ha marcado «${titulo}» para ver o hacer juntos.`,
-      url,
-    });
-    return;
-  }
-
-  await sendAvisosToUser(options.partnerId, {
-    title: "Nueva reseña",
-    body: `${nombre} ha reseñado «${titulo}».`,
+  await sendTemplatedAviso({
+    key,
+    userIds: [options.partnerId],
+    vars,
     url,
   });
 }

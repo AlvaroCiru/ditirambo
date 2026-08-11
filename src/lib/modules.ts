@@ -2,6 +2,7 @@ import {
   Star,
   CalendarDays,
   NotebookPen,
+  BellRing,
   type LucideIcon,
 } from "lucide-react";
 
@@ -16,6 +17,8 @@ export interface AppModule {
   icon: LucideIcon;
   /** Prefijos de ruta que pertenecen a este módulo (para estado activo). */
   match: string[];
+  /** Si true, solo se muestra a perfiles con es_admin. */
+  adminOnly?: boolean;
 }
 
 export const APP_MODULES: AppModule[] = [
@@ -40,7 +43,19 @@ export const APP_MODULES: AppModule[] = [
     icon: NotebookPen,
     match: ["/notas"],
   },
+  {
+    id: "avisos",
+    label: "Centro de notificaciones",
+    href: "/avisos",
+    icon: BellRing,
+    match: ["/avisos"],
+    adminOnly: true,
+  },
 ];
+
+export function modulesForUser(isAdmin: boolean): AppModule[] {
+  return APP_MODULES.filter((mod) => !mod.adminOnly || isAdmin);
+}
 
 export function moduleForPath(pathname: string): AppModule | undefined {
   return APP_MODULES.find((mod) =>

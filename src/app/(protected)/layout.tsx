@@ -13,6 +13,7 @@ export default async function ProtectedLayout({
   const user = await getAuthedUser();
   const profiles = await getProfiles();
   const me = profiles.find((p) => p.id === user.id);
+  const isAdmin = Boolean(me?.es_admin);
 
   const profileSlot = (
     <>
@@ -35,5 +36,9 @@ export default async function ProtectedLayout({
     </>
   );
 
-  return <AppShell profileSlot={profileSlot}>{children}</AppShell>;
+  return (
+    <AppShell profileSlot={profileSlot} isAdmin={isAdmin}>
+      {children}
+    </AppShell>
+  );
 }

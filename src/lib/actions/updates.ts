@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthedUser, getProfiles } from "@/lib/dal";
 import { getNextAppVersion } from "@/lib/queries-updates";
 import { formatAppVersion } from "@/lib/updates-meta";
-import { sendAvisosToUsers } from "@/lib/push/send";
+import { sendTemplatedAviso } from "@/lib/push/templates";
 
 export interface UpdateFormState {
   error?: string;
@@ -40,14 +40,11 @@ async function avisarNuevaActualizacion(options: {
 }) {
   const version = formatAppVersion(options.major, options.minor);
   const profiles = await getProfiles();
-  await sendAvisosToUsers(
-    profiles.map((p) => p.id),
-    {
-      title: `Actualización ${version}`,
-      body: options.titulo,
-      url: "/notas/actualizaciones",
-    },
-  );
+  await sendTemplatedAviso({
+    key: "app_update",
+    userIds: profiles.map((p) => p.id),
+    vars: { version, titulo: options.titulo },
+  });
 }
 
 export async function createAppUpdate(

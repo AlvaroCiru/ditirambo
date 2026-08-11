@@ -23,8 +23,22 @@ export const getProfiles = cache(async (): Promise<Profile[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, display_name, avatar_url");
+    .select("id, display_name, avatar_url, es_admin");
 
   if (error) throw error;
-  return data;
+  return (data ?? []).map((row) => ({
+    ...row,
+    es_admin: Boolean(row.es_admin),
+  }));
 });
+
+export const isCurrentUserAdmin = cache(async (): Promise<boolean> => {
+  const user = await getAuthedUser();
+  const profiles = await getProfiles();
+  return Boolean(profiles.find((p) => p.id === user.id)?.es_admin);
+});
+
+export async function requireAdmin() {
+  const ok = await isCurrentUserAdmin();
+  if (!ok) redirect("/resenas");
+}

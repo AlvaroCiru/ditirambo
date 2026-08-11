@@ -8,7 +8,7 @@ import {
   isAvisosWebEnabled,
   type AvisosConfigIssue,
 } from "@/lib/push/config";
-import { sendAvisosToUser } from "@/lib/push/send";
+import { sendTemplatedAviso } from "@/lib/push/templates";
 
 export interface PushSettingsState {
   enabled: boolean;
@@ -108,10 +108,9 @@ export async function sendTestAviso(): Promise<{ error?: string }> {
   }
 
   const user = await getAuthedUser();
-  await sendAvisosToUser(user.id, {
-    title: "Ditirambo",
-    body: "Aviso de prueba: si lees esto, los avisos funcionan.",
-    url: "/perfil",
+  await sendTemplatedAviso({
+    key: "push_test",
+    userIds: [user.id],
   });
   return {};
 }

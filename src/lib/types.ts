@@ -39,6 +39,28 @@ export interface Profile {
   id: string;
   display_name: string;
   avatar_url: string | null;
+  es_admin: boolean;
+}
+
+export type NotificationTemplateKey =
+  | "review_new"
+  | "review_recommendation"
+  | "review_shared"
+  | "app_update"
+  | "push_test";
+
+export interface NotificationTemplate {
+  id: string;
+  key: NotificationTemplateKey | string;
+  label: string;
+  description: string;
+  title_template: string;
+  body_template: string;
+  enabled: boolean;
+  url_default: string;
+  variables: string[];
+  creado_en: string;
+  actualizado_en: string;
 }
 
 export interface WorkWithReviews extends Work {
