@@ -39,7 +39,8 @@ export function NoteForm() {
       <div>
         <h2 className="font-heading text-lg">Nueva nota</h2>
         <p className="text-xs text-muted-foreground">
-          Entra en Ideas; luego la mueves tú por el tablero.
+          Entra en Ideas; luego se mueve en el tablero. Las actualizaciones de
+          producto van en la pestaña Actualizaciones.
         </p>
       </div>
       <div className="flex flex-col gap-2">
@@ -53,7 +54,7 @@ export function NoteForm() {
           name="cuerpo"
           rows={4}
           maxLength={8000}
-          placeholder="Qué queremos añadir o cambiar…"
+          placeholder="Qué se quiere añadir o cambiar…"
         />
       </div>
       <div className="flex flex-col gap-2">

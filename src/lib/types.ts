@@ -60,3 +60,15 @@ export interface DevNote {
   creado_en: string;
   actualizado_en: string;
 }
+
+/** Nota de actualización de producto (versión v.X.XX). */
+export interface AppUpdate {
+  id: string;
+  version_major: number;
+  version_minor: number;
+  titulo: string;
+  cuerpo: string;
+  creado_por: string;
+  creado_en: string;
+  actualizado_en: string;
+}

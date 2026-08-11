@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 const links = [
   { href: "/notas", label: "Cuaderno", exact: true },
   { href: "/notas/tablero", label: "Tablero" },
+  { href: "/notas/actualizaciones", label: "Actualizaciones" },
 ];
 
 export function NotesSectionNav() {

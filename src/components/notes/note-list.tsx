@@ -96,10 +96,13 @@ export function NoteList({
   if (notes.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        Todavía no hay notas. Dejad la primera idea arriba.
+        Todavía no hay notas de seguimiento.
       </p>
     );
   }
+
+  const authorOf = (note: DevNote) =>
+    profiles.find((p) => p.id === note.creado_por)?.display_name ?? "Alguien";
 
   return (
     <div className="flex flex-col gap-8">
@@ -112,7 +115,7 @@ export function NoteList({
         </h2>
         {pending.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No hay nada pendiente. Todo hecho por ahora.
+            No hay nada pendiente.
           </p>
         ) : (
           <ul className="flex flex-col gap-3">
@@ -120,10 +123,7 @@ export function NoteList({
               <NoteCard
                 key={note.id}
                 note={note}
-                authorName={
-                  profiles.find((p) => p.id === note.creado_por)?.display_name ??
-                  "Alguien"
-                }
+                authorName={authorOf(note)}
               />
             ))}
           </ul>
@@ -147,10 +147,7 @@ export function NoteList({
               <NoteCard
                 key={note.id}
                 note={note}
-                authorName={
-                  profiles.find((p) => p.id === note.creado_por)?.display_name ??
-                  "Alguien"
-                }
+                authorName={authorOf(note)}
               />
             ))}
           </ul>

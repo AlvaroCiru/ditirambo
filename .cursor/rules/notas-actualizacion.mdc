@@ -1,0 +1,37 @@
+---
+description: Tono, estructura y publicación de actualizaciones Ditirambo (v.X.XX)
+alwaysApply: true
+---
+
+# Notas de actualización (Ditirambo)
+
+Registro aparte en `/notas/actualizaciones` (tabla `app_updates`). **No** mezclar con notas de seguimiento del Cuaderno/Tablero (`ID-XXX`).
+
+## Cuándo publicar
+
+- Solo al **cerrar una sesión de trabajo** con cambios relevantes.
+- No publicar una actualización por cada deploy a producción.
+
+## Versionado
+
+- Formato fijo: `v.{major}.{minor}` con minor a 2 dígitos → `v.1.01`, `v.1.02`, …
+- La primera entrada migrada es `v.1.01`.
+- Por defecto, al publicar se incrementa el **minor** de la última versión del mismo major.
+- Subir **major** solo si el usuario lo indica explícitamente.
+
+## Tono
+
+- Prohibida la **segunda persona del plural** (vosotros/os, queréis, añadid…).
+- Usar **tercera persona** o **impersonal**.
+- Estas normas son del agente; **nunca** se escriben dentro del cuerpo de la nota.
+
+## Estructura del cuerpo (obligatoria)
+
+1. **Nuevas funcionalidades**
+2. **Errores / correcciones** (si no hay: «Ninguno en esta tanda.»)
+3. **Futuras actualizaciones**
+
+## Publicación técnica
+
+- Insertar vía acción/`app_updates` (agente o IDE con acceso a producción).
+- Notificar a **ambos** usuarios: título con la versión (`v.X.XX`) y enlace a `/notas/actualizaciones`.

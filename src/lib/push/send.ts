@@ -23,6 +23,15 @@ function configureWebPush() {
   webpush.setVapidDetails(subject, publicKey, privateKey);
 }
 
+/** Envía el mismo aviso a varios usuarios (p. ej. ambos perfiles). */
+export async function sendAvisosToUsers(
+  userIds: string[],
+  payload: AvisoPayload,
+): Promise<void> {
+  const unique = [...new Set(userIds.filter(Boolean))];
+  await Promise.all(unique.map((id) => sendAvisosToUser(id, payload)));
+}
+
 /** Envío best-effort: nunca lanza al llamador de negocio. */
 export async function sendAvisosToUser(
   userId: string,

@@ -28,6 +28,7 @@ const noteSchema = z.object({
 function revalidateNotes() {
   revalidatePath("/notas");
   revalidatePath("/notas/tablero");
+  revalidatePath("/notas/actualizaciones");
 }
 
 export async function createDevNote(

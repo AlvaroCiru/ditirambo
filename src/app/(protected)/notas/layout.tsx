@@ -7,7 +7,7 @@ export default function NotasLayout({ children }: { children: ReactNode }) {
       <div>
         <h1 className="font-heading text-2xl">Notas de desarrollo</h1>
         <p className="text-sm text-muted-foreground">
-          Ideas, prioridades y seguimiento de lo que vamos construyendo.
+          Seguimiento de tareas, tablero kanban y registro de versiones.
         </p>
       </div>
       <NotesSectionNav />
