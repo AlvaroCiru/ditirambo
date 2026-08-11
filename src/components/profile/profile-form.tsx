@@ -5,7 +5,7 @@ import { updateProfile, type ProfileFormState } from "@/lib/actions/profile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserAvatar } from "@/components/profile/user-avatar";
+import { ExpandableAvatar } from "@/components/profile/expandable-avatar";
 
 const initialState: ProfileFormState = {};
 
@@ -26,10 +26,10 @@ export function ProfileForm({
   return (
     <form action={formAction} className="flex flex-col gap-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-        <UserAvatar
+        <ExpandableAvatar
           displayName={displayName}
           avatarUrl={avatarUrl}
-          size="lg"
+          size="xl"
         />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <Label htmlFor="avatar">Foto de perfil</Label>

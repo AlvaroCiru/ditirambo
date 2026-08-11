@@ -18,7 +18,7 @@ export function UserAvatar({
 }: {
   displayName: string;
   avatarUrl: string | null;
-  size?: "sm" | "default" | "lg";
+  size?: "sm" | "default" | "lg" | "xl";
   className?: string;
 }) {
   return (
