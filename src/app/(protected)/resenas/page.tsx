@@ -3,19 +3,22 @@ import {
   getDashboardStats,
   getPendingRecommendations,
   getRecentActivity,
+  getSharedTogether,
 } from "@/lib/queries";
 import { getProfiles } from "@/lib/dal";
 import { ActivityItem } from "@/components/works/activity-item";
 import { StatsGrid } from "@/components/dashboard/stats-grid";
 import { CategoryBreakdown } from "@/components/dashboard/category-breakdown";
 import { PendingRecommendations } from "@/components/dashboard/pending-recommendations";
+import { SharedTogether } from "@/components/dashboard/shared-together";
 
 export default async function FeedPage() {
-  const [activity, profiles, stats, pending] = await Promise.all([
+  const [activity, profiles, stats, pending, shared] = await Promise.all([
     getRecentActivity(),
     getProfiles(),
     getDashboardStats(),
     getPendingRecommendations(),
+    getSharedTogether(),
   ]);
 
   return (
@@ -33,6 +36,7 @@ export default async function FeedPage() {
       </div>
 
       <PendingRecommendations items={pending} profiles={profiles} />
+      <SharedTogether items={shared} profiles={profiles} />
 
       <section className="flex flex-col gap-4">
         <h2 className="font-heading text-xl">Actividad reciente</h2>

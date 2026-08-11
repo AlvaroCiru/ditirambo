@@ -223,3 +223,35 @@ export async function getPendingRecommendations(): Promise<
     .filter((row): row is ReviewWithWork & { works: Work } => row.works !== null)
     .map(({ works, ...fromReview }) => ({ work: works, fromReview }));
 }
+
+export interface SharedTogetherItem {
+  work: Work;
+  fromReview: Review;
+}
+
+/** Obras marcadas «Para compartir» (ver/hacer juntos). */
+export async function getSharedTogether(): Promise<SharedTogetherItem[]> {
+  await getAuthedUser();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .select(`*, works(${WORK_FEED_COLUMNS})`)
+    .eq("para_compartir", true)
+    .order("actualizado_en", { ascending: false })
+    .returns<ReviewWithWork[]>();
+
+  if (error) throw error;
+
+  const seen = new Set<string>();
+  const items: SharedTogetherItem[] = [];
+
+  for (const row of data ?? []) {
+    if (!row.works || seen.has(row.works.id)) continue;
+    seen.add(row.works.id);
+    const { works, ...fromReview } = row;
+    items.push({ work: works, fromReview });
+  }
+
+  return items;
+}

@@ -34,7 +34,7 @@ export function ReviewForm({
           name="nota"
           defaultValue={existingReview?.nota}
         />
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2">
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
@@ -46,12 +46,25 @@ export function ReviewForm({
             />
             Recomendar a mi pareja
           </label>
-          {!partnerId && (
-            <p className="text-xs text-muted-foreground">
-              Se activará en cuanto exista la cuenta de tu pareja.
-            </p>
-          )}
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="para_compartir"
+              value="si"
+              defaultChecked={Boolean(existingReview?.para_compartir)}
+              className="size-4 accent-primary"
+            />
+            Para compartir
+          </label>
         </div>
+        {!partnerId && (
+          <p className="text-xs text-muted-foreground">
+            La recomendación se activará cuando exista la cuenta de tu pareja.
+          </p>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Recomendación: para el otro. Para compartir: ver o hacer juntos.
+        </p>
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="texto">Reseña</Label>

@@ -30,6 +30,7 @@ export interface Review {
   nota: number | null;
   texto: string | null;
   recomendado_para: string | null;
+  para_compartir: boolean;
   creado_en: string;
   actualizado_en: string;
 }

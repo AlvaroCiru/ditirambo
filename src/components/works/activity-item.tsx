@@ -51,10 +51,13 @@ export function ActivityItem({
           {item.review.texto}
         </p>
       )}
-      {recommendedTo && (
-        <p className="text-xs text-muted-foreground">
-          Recomendado a {recommendedTo.display_name}
-        </p>
+      {(recommendedTo || item.review.para_compartir) && (
+        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          {recommendedTo && (
+            <p>Recomendado a {recommendedTo.display_name}</p>
+          )}
+          {item.review.para_compartir && <p>Para compartir</p>}
+        </div>
       )}
     </Link>
   );

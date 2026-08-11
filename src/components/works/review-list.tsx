@@ -54,10 +54,13 @@ export function ReviewList({
                 {review.texto}
               </p>
             )}
-            {recommendedTo && (
-              <p className="text-xs text-muted-foreground">
-                Recomendado a {recommendedTo.display_name}
-              </p>
+            {(recommendedTo || review.para_compartir) && (
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                {recommendedTo && (
+                  <p>Recomendado a {recommendedTo.display_name}</p>
+                )}
+                {review.para_compartir && <p>Para compartir</p>}
+              </div>
             )}
           </div>
         );

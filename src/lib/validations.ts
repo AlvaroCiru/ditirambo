@@ -58,6 +58,7 @@ export const reviewSchema = z.object({
     .optional()
     .transform((v) => v || undefined),
   recomendado: z.enum(["si", "no"]).nullish(),
+  para_compartir: z.enum(["si", "no"]).nullish(),
 });
 
 export const statusSchema = z.enum(WORK_STATUS_VALUES);

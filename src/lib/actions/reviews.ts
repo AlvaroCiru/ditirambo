@@ -17,6 +17,7 @@ async function avisosTrasResena(options: {
   authorId: string;
   partnerId: string | null;
   recomendado: boolean;
+  paraCompartir: boolean;
 }) {
   if (!isAvisosWebEnabled() || !options.partnerId) return;
 
@@ -35,6 +36,15 @@ async function avisosTrasResena(options: {
     await sendAvisosToUser(options.partnerId, {
       title: "Nueva recomendación",
       body: `${nombre} te ha recomendado «${titulo}».`,
+      url,
+    });
+    return;
+  }
+
+  if (options.paraCompartir) {
+    await sendAvisosToUser(options.partnerId, {
+      title: "Para compartir",
+      body: `${nombre} ha marcado «${titulo}» para ver o hacer juntos.`,
       url,
     });
     return;
@@ -59,6 +69,7 @@ export async function upsertReview(
     nota: formData.get("nota"),
     texto: formData.get("texto"),
     recomendado: formData.get("recomendado"),
+    para_compartir: formData.get("para_compartir"),
   });
 
   if (!parsed.success) {
@@ -67,6 +78,7 @@ export async function upsertReview(
 
   const supabase = await createClient();
   const recomendado = parsed.data.recomendado === "si";
+  const paraCompartir = parsed.data.para_compartir === "si";
   const { error } = await supabase.from("reviews").upsert(
     {
       work_id: workId,
@@ -74,6 +86,7 @@ export async function upsertReview(
       nota: parsed.data.nota ?? null,
       texto: parsed.data.texto ?? null,
       recomendado_para: recomendado ? partnerId : null,
+      para_compartir: paraCompartir,
       actualizado_en: new Date().toISOString(),
     },
     { onConflict: "work_id,user_id" },
@@ -88,6 +101,7 @@ export async function upsertReview(
     authorId: user.id,
     partnerId,
     recomendado,
+    paraCompartir,
   });
 
   revalidatePath(`/resenas/obras/${workId}`);
