@@ -39,7 +39,7 @@ export function NoteForm() {
       <div>
         <h2 className="font-heading text-lg">Nueva nota</h2>
         <p className="text-xs text-muted-foreground">
-          Apunta ideas o tareas; luego las mueves en el tablero.
+          Entra en Ideas; luego la mueves tú por el tablero.
         </p>
       </div>
       <div className="flex flex-col gap-2">

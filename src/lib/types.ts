@@ -49,6 +49,8 @@ export type DevNotePriority = "baja" | "media" | "alta";
 
 export interface DevNote {
   id: string;
+  /** Correlativo interno (1, 2, 3…). En UI se muestra como ID-001. */
+  codigo: number;
   titulo: string;
   cuerpo: string;
   estado: DevNoteStatus;

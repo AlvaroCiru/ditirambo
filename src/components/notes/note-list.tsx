@@ -6,7 +6,7 @@ import { deleteDevNote } from "@/lib/actions/notes";
 import { NotePrioritySelect } from "@/components/notes/note-priority-select";
 import { NoteStatusSelect } from "@/components/notes/note-status-select";
 import { Button } from "@/components/ui/button";
-import { NOTE_PRIORITY_WEIGHT } from "@/lib/notes-meta";
+import { formatNoteCodigo, NOTE_PRIORITY_WEIGHT } from "@/lib/notes-meta";
 import type { DevNote, Profile } from "@/lib/types";
 
 function formatDate(value: string) {
@@ -37,6 +37,9 @@ function NoteCard({
     <li className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
+          <p className="text-xs font-medium tabular-nums text-accent">
+            {formatNoteCodigo(note.codigo)}
+          </p>
           <h3 className="font-heading text-lg leading-snug break-words">
             {note.titulo}
           </h3>

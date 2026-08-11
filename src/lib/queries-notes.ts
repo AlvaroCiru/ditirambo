@@ -6,7 +6,7 @@ import { NOTE_PRIORITY_WEIGHT } from "@/lib/notes-meta";
 import type { DevNote } from "@/lib/types";
 
 const NOTE_COLUMNS =
-  "id, titulo, cuerpo, estado, prioridad, creado_por, creado_en, actualizado_en" as const;
+  "id, codigo, titulo, cuerpo, estado, prioridad, creado_por, creado_en, actualizado_en" as const;
 
 function sortForBoard(a: DevNote, b: DevNote) {
   const byPriority =

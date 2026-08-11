@@ -1,5 +1,10 @@
 import type { DevNotePriority, DevNoteStatus } from "@/lib/types";
 
+/** Formato fijo ID-001, ID-002, … */
+export function formatNoteCodigo(codigo: number): string {
+  return `ID-${String(codigo).padStart(3, "0")}`;
+}
+
 export const NOTE_STATUS_ORDER = [
   "idea",
   "por_hacer",

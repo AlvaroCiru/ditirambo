@@ -51,7 +51,7 @@ export async function createDevNote(
     titulo: parsed.data.titulo,
     cuerpo: parsed.data.cuerpo ?? "",
     prioridad: parsed.data.prioridad,
-    estado: "por_hacer",
+    estado: "idea",
     creado_por: user.id,
   });
 
