@@ -8,7 +8,8 @@ create type public.cita_categoria as enum (
   'viajes',
   'cine',
   'restaurantes',
-  'hotel'
+  'hotel',
+  'otros'
 );
 
 create type public.cita_estado as enum (

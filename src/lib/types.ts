@@ -50,7 +50,8 @@ export type CitaCategoria =
   | "viajes"
   | "cine"
   | "restaurantes"
-  | "hotel";
+  | "hotel"
+  | "otros";
 
 export type CitaEstado =
   | "propuesta"

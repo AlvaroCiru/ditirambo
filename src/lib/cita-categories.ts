@@ -7,6 +7,7 @@ import {
   Clapperboard,
   UtensilsCrossed,
   Hotel,
+  MoreHorizontal,
   type LucideIcon,
 } from "lucide-react";
 import type { CitaCategoria, CitaEstado } from "./types";
@@ -25,6 +26,7 @@ export const CITA_CATEGORY_ORDER: CitaCategoria[] = [
   "cine",
   "restaurantes",
   "hotel",
+  "otros",
 ];
 
 export const CITA_CATEGORY_CONFIG: Record<CitaCategoria, CitaCategoryConfig> = {
@@ -36,6 +38,7 @@ export const CITA_CATEGORY_CONFIG: Record<CitaCategoria, CitaCategoryConfig> = {
   cine: { label: "Cine", icon: Clapperboard },
   restaurantes: { label: "Restaurantes", icon: UtensilsCrossed },
   hotel: { label: "Hotel", icon: Hotel },
+  otros: { label: "Otros", icon: MoreHorizontal },
 };
 
 export const CITA_STATUS_ORDER: CitaEstado[] = [

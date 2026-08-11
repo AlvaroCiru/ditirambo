@@ -1,21 +1,12 @@
 import { Suspense } from "react";
 import { CitaCard } from "@/components/citas/cita-card";
 import { CitasFilters } from "@/components/citas/citas-filters";
+import { CITA_CATEGORY_ORDER } from "@/lib/cita-categories";
 import { getProfiles } from "@/lib/dal";
 import { getCitas } from "@/lib/queries-citas";
 import type { CitaCategoria, CitaEstado } from "@/lib/types";
 
 const ESTADOS: CitaEstado[] = ["propuesta", "programada", "finalizada"];
-const CATEGORIAS: CitaCategoria[] = [
-  "excursiones",
-  "operas",
-  "museos",
-  "conciertos",
-  "viajes",
-  "cine",
-  "restaurantes",
-  "hotel",
-];
 
 export default async function CitasListaPage({
   searchParams,
@@ -26,7 +17,9 @@ export default async function CitasListaPage({
   const estado = ESTADOS.includes(params.estado as CitaEstado)
     ? (params.estado as CitaEstado)
     : undefined;
-  const categoria = CATEGORIAS.includes(params.categoria as CitaCategoria)
+  const categoria = CITA_CATEGORY_ORDER.includes(
+    params.categoria as CitaCategoria,
+  )
     ? (params.categoria as CitaCategoria)
     : undefined;
 
