@@ -96,7 +96,7 @@ export const citaSchema = z
     descripcion: z
       .string()
       .trim()
-      .max(4000)
+      .max(100_000, "La descripción es demasiado larga.")
       .optional()
       .transform((v) => v || undefined),
     categoria: z.enum(CITA_CATEGORIA_VALUES),

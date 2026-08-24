@@ -100,6 +100,21 @@ export default async function CitaDetailPage({
         </p>
       )}
 
+      {cita.recuerdo_url && (
+        <section className="flex flex-col gap-2 border-t border-border pt-4">
+          <h3 className="font-heading text-lg">Recuerdo</h3>
+          <div className="relative flex h-72 max-h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-background">
+            <Image
+              src={cita.recuerdo_url}
+              alt="Recuerdo de la cita"
+              fill
+              sizes="(max-width: 896px) 100vw, 896px"
+              className="object-cover"
+            />
+          </div>
+        </section>
+      )}
+
       <div className="flex flex-col gap-2 border-t border-border pt-4">
         {author && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useActionState } from "react";
 import { createCita, updateCita, type CitaFormState } from "@/lib/actions/citas";
 import { Button } from "@/components/ui/button";
@@ -96,18 +97,77 @@ export function CitaForm({ cita }: { cita?: Cita }) {
         <Textarea
           id="descripcion"
           name="descripcion"
-          rows={4}
-          maxLength={4000}
+          rows={8}
+          maxLength={100000}
           defaultValue={cita?.descripcion ?? undefined}
         />
+        <p className="text-xs text-muted-foreground">
+          Hasta 100.000 caracteres (planes largos, avisos, presupuestos…).
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="imagen">
           Foto {cita ? "(déjalo vacío para no cambiarla)" : "(opcional)"}
         </Label>
+        {cita?.imagen_url && (
+          <div className="flex items-start gap-3">
+            <div className="relative size-20 shrink-0 overflow-hidden rounded-md bg-background">
+              <Image
+                src={cita.imagen_url}
+                alt=""
+                fill
+                sizes="80px"
+                className="object-cover"
+              />
+            </div>
+            <label className="flex items-center gap-2 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                name="quitar_imagen"
+                value="si"
+                className="size-4 rounded border-border"
+              />
+              Eliminar foto actual
+            </label>
+          </div>
+        )}
         <Input id="imagen" name="imagen" type="file" accept="image/*" />
       </div>
+
+      {cita && (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="recuerdo">
+            Foto recuerdo post-cita
+            {cita.recuerdo_url
+              ? " (déjalo vacío para no cambiarla)"
+              : " (opcional)"}
+          </Label>
+          {cita.recuerdo_url && (
+            <div className="flex items-start gap-3">
+              <div className="relative size-20 shrink-0 overflow-hidden rounded-md bg-background">
+                <Image
+                  src={cita.recuerdo_url}
+                  alt=""
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                />
+              </div>
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                <input
+                  type="checkbox"
+                  name="quitar_recuerdo"
+                  value="si"
+                  className="size-4 rounded border-border"
+                />
+                Eliminar recuerdo actual
+              </label>
+            </div>
+          )}
+          <Input id="recuerdo" name="recuerdo" type="file" accept="image/*" />
+        </div>
+      )}
 
       {state?.error && (
         <p role="alert" className="text-sm text-destructive">

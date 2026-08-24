@@ -113,19 +113,29 @@ export function CitasCalendar({ citas }: { citas: Cita[] }) {
                   {date.getDate()}
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  {dayCitas.slice(0, 3).map((cita) => (
-                    <Link
-                      key={cita.id}
-                      href={`/citas/${cita.id}`}
-                      className="truncate rounded px-1 py-0.5 text-[11px] leading-tight text-foreground hover:opacity-90"
-                      style={{
-                        backgroundColor: `color-mix(in oklch, var(--cita-${cita.categoria}) 28%, var(--card))`,
-                      }}
-                      title={cita.titulo}
-                    >
-                      {cita.titulo}
-                    </Link>
-                  ))}
+                  {dayCitas.slice(0, 3).map((cita) => {
+                    const past = cita.estado === "finalizada";
+                    return (
+                      <Link
+                        key={cita.id}
+                        href={`/citas/${cita.id}`}
+                        className={cn(
+                          "truncate rounded px-1 py-0.5 text-[11px] leading-tight hover:opacity-90",
+                          past
+                            ? "text-muted-foreground line-through decoration-muted-foreground/50"
+                            : "text-foreground",
+                        )}
+                        style={{
+                          backgroundColor: past
+                            ? `color-mix(in oklch, var(--cita-${cita.categoria}) 12%, var(--card))`
+                            : `color-mix(in oklch, var(--cita-${cita.categoria}) 28%, var(--card))`,
+                        }}
+                        title={`${cita.titulo}${past ? " (finalizada)" : ""}`}
+                      >
+                        {cita.titulo}
+                      </Link>
+                    );
+                  })}
                   {dayCitas.length > 3 && (
                     <span className="px-1 text-[10px] text-muted-foreground">
                       +{dayCitas.length - 3} más

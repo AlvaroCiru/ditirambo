@@ -180,7 +180,8 @@ export async function updateCita(
     ubicacion: string;
     inicio_en: string;
     fin_en: string;
-    imagen_url?: string;
+    imagen_url?: string | null;
+    recuerdo_url?: string | null;
     actualizado_en: string;
   } = {
     titulo: parsed.data.titulo,
@@ -192,24 +193,54 @@ export async function updateCita(
     actualizado_en: new Date().toISOString(),
   };
 
-  let previousImagePath: string | undefined;
+  const pathsToRemove: string[] = [];
+  const marker = "/citas/";
+
+  const { data: current } = await supabase
+    .from("citas")
+    .select("imagen_url, recuerdo_url")
+    .eq("id", citaId)
+    .maybeSingle();
+
   const imagenFile = formData.get("imagen");
+  const quitarImagen = formData.get("quitar_imagen") === "si";
   if (imagenFile instanceof File && imagenFile.size > 0) {
     const uploaded = await uploadCitaImage(supabase, user.id, imagenFile);
     if (uploaded.error) return { error: uploaded.error };
     updates.imagen_url = uploaded.url;
 
-    const { data: current } = await supabase
-      .from("citas")
-      .select("imagen_url")
-      .eq("id", citaId)
-      .maybeSingle();
-
-    const marker = "/citas/";
     const oldUrl = current?.imagen_url;
     const markerIndex = oldUrl?.indexOf(marker) ?? -1;
     if (oldUrl && markerIndex !== -1) {
-      previousImagePath = oldUrl.slice(markerIndex + marker.length);
+      pathsToRemove.push(oldUrl.slice(markerIndex + marker.length));
+    }
+  } else if (quitarImagen && current?.imagen_url) {
+    updates.imagen_url = null;
+    const markerIndex = current.imagen_url.indexOf(marker);
+    if (markerIndex !== -1) {
+      pathsToRemove.push(current.imagen_url.slice(markerIndex + marker.length));
+    }
+  }
+
+  const recuerdoFile = formData.get("recuerdo");
+  const quitarRecuerdo = formData.get("quitar_recuerdo") === "si";
+  if (recuerdoFile instanceof File && recuerdoFile.size > 0) {
+    const uploaded = await uploadCitaImage(supabase, user.id, recuerdoFile);
+    if (uploaded.error) return { error: uploaded.error };
+    updates.recuerdo_url = uploaded.url;
+
+    const oldUrl = current?.recuerdo_url;
+    const markerIndex = oldUrl?.indexOf(marker) ?? -1;
+    if (oldUrl && markerIndex !== -1) {
+      pathsToRemove.push(oldUrl.slice(markerIndex + marker.length));
+    }
+  } else if (quitarRecuerdo && current?.recuerdo_url) {
+    updates.recuerdo_url = null;
+    const markerIndex = current.recuerdo_url.indexOf(marker);
+    if (markerIndex !== -1) {
+      pathsToRemove.push(
+        current.recuerdo_url.slice(markerIndex + marker.length),
+      );
     }
   }
 
@@ -219,8 +250,8 @@ export async function updateCita(
     return { error: "No se ha podido actualizar la cita." };
   }
 
-  if (previousImagePath) {
-    await supabase.storage.from("citas").remove([previousImagePath]);
+  if (pathsToRemove.length > 0) {
+    await supabase.storage.from("citas").remove(pathsToRemove);
   }
 
   revalidateCitas(citaId);
@@ -326,7 +357,7 @@ export async function deleteCita(citaId: string) {
 
   const { data: current } = await supabase
     .from("citas")
-    .select("imagen_url")
+    .select("imagen_url, recuerdo_url")
     .eq("id", citaId)
     .maybeSingle();
 
@@ -334,12 +365,15 @@ export async function deleteCita(citaId: string) {
   if (error) throw new Error("No se ha podido borrar la cita.");
 
   const marker = "/citas/";
-  const oldUrl = current?.imagen_url;
-  const markerIndex = oldUrl?.indexOf(marker) ?? -1;
-  if (oldUrl && markerIndex !== -1) {
-    await supabase.storage
-      .from("citas")
-      .remove([oldUrl.slice(markerIndex + marker.length)]);
+  const paths: string[] = [];
+  for (const oldUrl of [current?.imagen_url, current?.recuerdo_url]) {
+    const markerIndex = oldUrl?.indexOf(marker) ?? -1;
+    if (oldUrl && markerIndex !== -1) {
+      paths.push(oldUrl.slice(markerIndex + marker.length));
+    }
+  }
+  if (paths.length > 0) {
+    await supabase.storage.from("citas").remove(paths);
   }
 
   revalidateCitas();

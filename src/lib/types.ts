@@ -69,6 +69,8 @@ export interface Cita {
   inicio_en: string;
   fin_en: string;
   imagen_url: string | null;
+  /** Foto recuerdo tras la cita (opcional). */
+  recuerdo_url: string | null;
   estado: CitaEstado;
   creado_por: string;
   aprobado_por: string | null;

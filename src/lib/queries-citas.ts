@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { Cita, CitaCategoria, CitaEstado } from "@/lib/types";
 
 const CITA_SELECT =
-  "id, titulo, descripcion, categoria, ubicacion, inicio_en, fin_en, imagen_url, estado, creado_por, aprobado_por, creado_en, actualizado_en";
+  "id, titulo, descripcion, categoria, ubicacion, inicio_en, fin_en, imagen_url, recuerdo_url, estado, creado_por, aprobado_por, creado_en, actualizado_en";
 
 async function finalizePastCitas(supabase: Awaited<ReturnType<typeof createClient>>) {
   const now = new Date().toISOString();
@@ -55,7 +55,7 @@ export async function getCitasForCalendar(range: {
   const { data, error } = await supabase
     .from("citas")
     .select(CITA_SELECT)
-    .in("estado", ["propuesta", "programada"])
+    .in("estado", ["propuesta", "programada", "finalizada"])
     .lte("inicio_en", range.to)
     .gte("fin_en", range.from)
     .order("inicio_en", { ascending: true });

@@ -31,16 +31,19 @@ export function CitaCard({
           {CITA_STATUS_LABELS[cita.estado]}
         </span>
       </div>
-      {cita.imagen_url && (
+      {(cita.recuerdo_url || cita.imagen_url) && (
         <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-background">
           <Image
-            src={cita.imagen_url}
+            src={cita.recuerdo_url || cita.imagen_url!}
             alt=""
             fill
             sizes="(max-width: 640px) 100vw, 50vw"
             className="object-cover"
           />
         </div>
+      )}
+      {cita.recuerdo_url && (
+        <span className="text-xs text-muted-foreground">Con recuerdo</span>
       )}
       <h3 className="min-w-0 break-words font-heading text-lg leading-snug group-hover:underline">
         {cita.titulo}
