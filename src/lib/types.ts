@@ -132,3 +132,75 @@ export interface AppUpdate {
   creado_en: string;
   actualizado_en: string;
 }
+
+export type SexoLugarTipo =
+  | "hotel"
+  | "casa"
+  | "exterior"
+  | "coche"
+  | "otros";
+
+export type SexoLugarEstado = "visitado" | "pendiente";
+
+export type SexoSugerenciaEstado = "propuesta" | "aceptada" | "rechazada";
+
+export interface SexoSettings {
+  id: string;
+  clave: string;
+  casa_lat: number;
+  casa_lng: number;
+  actualizado_en: string;
+}
+
+export interface SexoLugar {
+  id: string;
+  nombre: string;
+  tipo: SexoLugarTipo;
+  ubicacion_texto: string;
+  lat: number | null;
+  lng: number | null;
+  pais_code: string | null;
+  provincia: string | null;
+  ciudad: string | null;
+  imagen_url: string | null;
+  estado: SexoLugarEstado;
+  creado_por: string;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+export interface SexoEncuentro {
+  id: string;
+  lugar_id: string;
+  fecha: string;
+  titulo: string;
+  notas: string | null;
+  imagen_url: string | null;
+  creado_por: string;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+export interface SexoEncuentroConLugar extends SexoEncuentro {
+  lugar: SexoLugar;
+}
+
+export interface SexoLugarConStats extends SexoLugar {
+  encuentros_count: number;
+  ultima_fecha: string | null;
+}
+
+export interface SexoSugerencia {
+  id: string;
+  titulo: string;
+  notas: string | null;
+  tipo: SexoLugarTipo;
+  ubicacion_texto: string;
+  lat: number | null;
+  lng: number | null;
+  imagen_url: string | null;
+  estado: SexoSugerenciaEstado;
+  propuesto_por: string;
+  creado_en: string;
+  actualizado_en: string;
+}

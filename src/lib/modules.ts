@@ -3,6 +3,7 @@ import {
   CalendarDays,
   NotebookPen,
   BellRing,
+  Flame,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,6 +36,13 @@ export const APP_MODULES: AppModule[] = [
     href: "/citas",
     icon: CalendarDays,
     match: ["/citas"],
+  },
+  {
+    id: "sexo",
+    label: "Sexo",
+    href: "/sexo",
+    icon: Flame,
+    match: ["/sexo"],
   },
   {
     id: "notas",

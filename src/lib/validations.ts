@@ -54,7 +54,6 @@ export const reviewSchema = z.object({
   texto: z
     .string()
     .trim()
-    .max(4000)
     .optional()
     .transform((v) => v || undefined),
   recomendado: z.enum(["si", "no"]).nullish(),
@@ -96,11 +95,10 @@ export const citaSchema = z
     descripcion: z
       .string()
       .trim()
-      .max(100_000, "La descripción es demasiado larga.")
       .optional()
       .transform((v) => v || undefined),
     categoria: z.enum(CITA_CATEGORIA_VALUES),
-    ubicacion: z.string().trim().max(300).default(""),
+    ubicacion: z.string().trim().default(""),
     inicio_en: z
       .string()
       .min(1, "La fecha de inicio es obligatoria.")

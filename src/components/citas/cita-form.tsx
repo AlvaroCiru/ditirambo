@@ -63,7 +63,6 @@ export function CitaForm({ cita }: { cita?: Cita }) {
         <Input
           id="ubicacion"
           name="ubicacion"
-          maxLength={300}
           placeholder="Sitio, ciudad, dirección…"
           defaultValue={cita?.ubicacion}
         />
@@ -98,11 +97,10 @@ export function CitaForm({ cita }: { cita?: Cita }) {
           id="descripcion"
           name="descripcion"
           rows={8}
-          maxLength={100000}
           defaultValue={cita?.descripcion ?? undefined}
         />
         <p className="text-xs text-muted-foreground">
-          Hasta 100.000 caracteres (planes largos, avisos, presupuestos…).
+          Sin límite de caracteres (planes largos, avisos, presupuestos…).
         </p>
       </div>
 

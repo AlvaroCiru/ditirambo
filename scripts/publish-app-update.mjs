@@ -32,24 +32,18 @@ function loadEnvLocal() {
 
 loadEnvLocal();
 
-const titulo = "Actualización — agosto 2026";
+const titulo = "Actualización — módulo Sexo";
 const cuerpo = `1. Nuevas funcionalidades
-- Avisos web opcionales, con enlace a la obra al abrir la notificación.
-- Notas con decimales (escala /10) y representación visual con estrellas.
-- En el listado de obras, nota individual por usuario (avatar y puntuación), sin media.
-- Barra lateral de escritorio fija al desplazarse por el contenido.
-- Módulo de notas de desarrollo con Cuaderno, tablero kanban, prioridades y códigos automáticos ID-XXX.
-- Las notas de seguimiento nuevas se crean en estado Ideas.
-- Marca «Para compartir» en reseñas, diferenciada de la recomendación personal, con bloque en Inicio.
-- Registro de actualizaciones de producto con versionado v.X.XX y aviso a ambos perfiles.
+- Nueva pestaña Sexo: lugares, encuentros, mapa por provincias, timeline, curiosidades, pendientes y ajustes de casa.
+- Mapa de España con provincias visitadas en color; al pulsar se amplía la zona, se muestran los lugares y, al elegir uno, sus encuentros.
+- Autocompletado de direcciones (OpenStreetMap) al crear lugares o sugerencias.
+- Textos largos sin límite de caracteres en reseñas, descripciones de citas y notas del módulo Sexo.
 
 2. Errores / correcciones
-- Corrección del arrastre en el tablero en escritorio (auto-scroll horizontal del contenedor).
-- Restauración de la escala de notas /10 tras un ajuste temporal incorrecto.
+- Ninguno en esta tanda.
 
 3. Futuras actualizaciones
-- Continuación prevista del planificador de citas.
-- Las propuestas de nuevas funcionalidades o ajustes se registrarán como notas de seguimiento en el módulo de desarrollo.`;
+- Mejoras de búsqueda de sitios por nombre comercial si hace falta.`;
 
 const ALVARO_ID = "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6";
 
