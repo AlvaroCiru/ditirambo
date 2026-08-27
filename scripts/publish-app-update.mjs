@@ -32,12 +32,15 @@ function loadEnvLocal() {
 
 loadEnvLocal();
 
-const titulo = "Actualización — módulo Sexo";
+const titulo = "Actualización — Sexo: lugares y mapa";
 const cuerpo = `1. Nuevas funcionalidades
-- Nueva pestaña Sexo: lugares, encuentros, mapa por provincias, timeline, curiosidades, pendientes y ajustes de casa.
-- Mapa de España con provincias visitadas en color; al pulsar se amplía la zona, se muestran los lugares y, al elegir uno, sus encuentros.
-- Autocompletado de direcciones (OpenStreetMap) al crear lugares o sugerencias.
-- Textos largos sin límite de caracteres en reseñas, descripciones de citas y notas del módulo Sexo.
+- La pestaña Sexo pasa a ser una base de datos de lugares distintos: cada sitio se registra una sola vez, con la fecha de la primera vez, nota o recuerdo y foto opcional.
+- Navegación simplificada: Inicio, Mapa, Lugares y Línea temporal. Curiosidades y ajustes de casa siguen accesibles desde Inicio.
+- Formulario «Añadir lugar» con localidad, provincia, comunidad, país, mapa y aviso si el lugar parece duplicado. Edición y borrado desde la ficha.
+- Mapa de España con provincias registradas en color (sin intensidad por cantidad); al pulsar se amplían y se muestran los lugares. Vista Mundo por países.
+- Línea temporal agrupada por año y mes, un lugar por entrada.
+- Curiosidades solo geográficas: lugares, ciudades, provincias, comunidades, países, primeras veces y lugar más lejano.
+- La nota o recuerdo de cada lugar no tiene límite de caracteres.
 
 2. Errores / correcciones
 - Ninguno en esta tanda.

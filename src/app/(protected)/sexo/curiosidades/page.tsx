@@ -1,75 +1,91 @@
+import Link from "next/link";
 import { formatFechaCorta } from "@/lib/sexo-meta";
 import { getSexoCuriosidades } from "@/lib/queries-sexo";
 
 export default async function SexoCuriosidadesPage() {
   const c = await getSexoCuriosidades();
 
-  const cards = [
+  const counts = [
+    { label: "Lugares diferentes", value: String(c.lugares) },
+    { label: "Ciudades / localidades", value: String(c.ciudades) },
+    { label: "Provincias", value: String(c.provincias) },
+    { label: "Comunidades autónomas", value: String(c.comunidades) },
+    { label: "Países", value: String(c.paises) },
+  ];
+
+  const facts = [
     {
-      title: "Encuentros",
-      value: String(c.encuentros),
+      label: "Primera provincia",
+      value: c.primeraProvincia ?? "—",
     },
     {
-      title: "Lugares",
-      value: String(c.lugares),
+      label: "Primera comunidad fuera de Madrid",
+      value: c.primeraComunidadFueraMadrid ?? "—",
     },
     {
-      title: "Ciudades",
-      value: String(c.ciudades),
+      label: "Primer país extranjero",
+      value: c.primerPaisExtranjero ?? "—",
     },
     {
-      title: "Provincias",
-      value: String(c.provincias),
+      label: "Última provincia nueva",
+      value: c.ultimaProvinciaNueva ?? "—",
     },
     {
-      title: "Países",
-      value: String(c.paises),
+      label: "Último país nuevo",
+      value: c.ultimoPaisNuevo ?? "—",
     },
     {
-      title: "Primera vez registrada",
-      value: c.primeraFecha ? formatFechaCorta(c.primeraFecha) : "—",
-    },
-    {
-      title: "Último encuentro",
-      value: c.ultimaFecha ? formatFechaCorta(c.ultimaFecha) : "—",
-    },
-    {
-      title: "Lugar más repetido",
-      value: c.lugarMasRepetido
-        ? `${c.lugarMasRepetido.nombre} (${c.lugarMasRepetido.count})`
-        : "—",
-    },
-    {
-      title: "Provincia más repetida",
-      value: c.provinciaMasRepetida ?? "—",
-    },
-    {
-      title: "Mes con más encuentros",
-      value: c.mesMasEncuentros ?? "—",
-    },
-    {
-      title: "Más lejos de casa",
+      label: "Lugar más lejano",
       value: c.masLejos
-        ? `${c.masLejos.nombre} · ${c.masLejos.km} km`
+        ? `${c.masLejos.nombre} (${c.masLejos.km} km)${c.masLejos.ubicacion ? ` · ${c.masLejos.ubicacion}` : ""}`
         : "—",
     },
     {
-      title: "Primera vez fuera de España",
-      value: c.primeraFueraEspana ?? "—",
+      label: "Desde",
+      value: c.primeraFecha ? formatFechaCorta(c.primeraFecha) : "—",
     },
   ];
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {cards.map((card) => (
-        <div
-          key={card.title}
-          className="rounded-xl border border-border bg-card p-4"
-        >
-          <p className="text-xs text-muted-foreground">{card.title}</p>
-          <p className="mt-2 font-heading text-xl leading-snug">{card.value}</p>
-        </div>
-      ))}
+    <div className="flex flex-col gap-6">
+      <div>
+        <h2 className="font-heading text-xl">Curiosidades</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Solo geografía y primeras veces — sin frecuencias.
+        </p>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {counts.map((item) => (
+          <div
+            key={item.label}
+            className="rounded-xl border border-border bg-card px-4 py-3"
+          >
+            <p className="font-heading text-2xl">{item.value}</p>
+            <p className="text-xs text-muted-foreground">{item.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <dl className="grid gap-3 sm:grid-cols-2">
+        {facts.map((item) => (
+          <div
+            key={item.label}
+            className="rounded-xl border border-border bg-card px-4 py-3"
+          >
+            <dt className="text-xs text-muted-foreground">{item.label}</dt>
+            <dd className="mt-1 text-sm">{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <p className="text-sm text-muted-foreground">
+        La distancia se calcula desde{" "}
+        <Link href="/sexo/ajustes" className="underline">
+          la casa configurada
+        </Link>
+        .
+      </p>
     </div>
   );
 }

@@ -9,9 +9,6 @@ const links = [
   { href: "/sexo/mapa", label: "Mapa" },
   { href: "/sexo/lugares", label: "Lugares" },
   { href: "/sexo/timeline", label: "Línea temporal" },
-  { href: "/sexo/curiosidades", label: "Curiosidades" },
-  { href: "/sexo/pendientes", label: "Pendientes" },
-  { href: "/sexo/ajustes", label: "Ajustes" },
 ];
 
 export function SexoSectionNav() {

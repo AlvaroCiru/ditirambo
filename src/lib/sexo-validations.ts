@@ -4,6 +4,7 @@ import type { SexoLugarTipo } from "@/lib/types";
 export const SEXO_TIPO_VALUES = [
   "hotel",
   "casa",
+  "apartamento",
   "exterior",
   "coche",
   "otros",
@@ -19,6 +20,10 @@ function optionalCoord(value: unknown): number | null {
 export const sexoLugarSchema = z.object({
   nombre: z.string().trim().min(1, "El nombre es obligatorio.").max(200),
   tipo: z.enum(SEXO_TIPO_VALUES),
+  fecha_primera: z
+    .string()
+    .min(1, "La fecha es obligatoria.")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Fecha no válida."),
   ubicacion_texto: z.string().trim().default(""),
   lat: z.any().transform(optionalCoord),
   lng: z.any().transform(optionalCoord),
@@ -40,30 +45,21 @@ export const sexoLugarSchema = z.object({
     .max(120)
     .optional()
     .transform((v) => v || null),
-});
-
-export const sexoEncuentroSchema = z.object({
-  lugar_id: z.string().uuid("Elige un lugar."),
-  fecha: z.string().min(1, "La fecha es obligatoria."),
-  titulo: z.string().trim().min(1, "El título es obligatorio.").max(200),
-  notas: z
+  comunidad_autonoma: z
+    .string()
+    .trim()
+    .max(120)
+    .optional()
+    .transform((v) => v || null),
+  nota: z
     .string()
     .trim()
     .optional()
-    .transform((v) => v || undefined),
-});
-
-export const sexoSugerenciaSchema = z.object({
-  titulo: z.string().trim().min(1, "El título es obligatorio.").max(200),
-  notas: z
-    .string()
-    .trim()
+    .transform((v) => v || null),
+  confirmar_duplicado: z
+    .any()
     .optional()
-    .transform((v) => v || undefined),
-  tipo: z.enum(SEXO_TIPO_VALUES),
-  ubicacion_texto: z.string().trim().default(""),
-  lat: z.any().transform(optionalCoord),
-  lng: z.any().transform(optionalCoord),
+    .transform((v) => v === "1" || v === "true" || v === true),
 });
 
 export const sexoCasaSchema = z.object({

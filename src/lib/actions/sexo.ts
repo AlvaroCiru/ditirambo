@@ -4,17 +4,14 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getAuthedUser } from "@/lib/dal";
-import { DEFAULT_HOME } from "@/lib/sexo-meta";
+import { comunidadFromProvincia, DEFAULT_HOME } from "@/lib/sexo-meta";
 import { normalizeSpainProvince } from "@/lib/spain-provinces";
-import {
-  sexoCasaSchema,
-  sexoEncuentroSchema,
-  sexoLugarSchema,
-  sexoSugerenciaSchema,
-} from "@/lib/sexo-validations";
+import { findSexoLugarDuplicates } from "@/lib/queries-sexo";
+import { sexoCasaSchema, sexoLugarSchema } from "@/lib/sexo-validations";
 
 export interface SexoFormState {
   error?: string;
+  duplicates?: Array<{ id: string; nombre: string; ciudad: string | null }>;
 }
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
@@ -25,9 +22,7 @@ function revalidateSexo(paths: string[] = []) {
   revalidatePath("/sexo/lugares");
   revalidatePath("/sexo/timeline");
   revalidatePath("/sexo/curiosidades");
-  revalidatePath("/sexo/pendientes");
   revalidatePath("/sexo/ajustes");
-  revalidatePath("/sexo/encuentro/nuevo");
   for (const p of paths) revalidatePath(p);
 }
 
@@ -45,6 +40,26 @@ async function uploadSexoImage(
   if (error) return { error: "No se ha podido subir la imagen." };
   return {
     url: supabase.storage.from("sexo").getPublicUrl(path).data.publicUrl,
+  };
+}
+
+function buildLugarPayload(parsed: ReturnType<typeof sexoLugarSchema.parse>) {
+  const provincia =
+    normalizeSpainProvince(parsed.provincia) ?? parsed.provincia;
+  const comunidad =
+    parsed.comunidad_autonoma || comunidadFromProvincia(provincia);
+  return {
+    nombre: parsed.nombre,
+    tipo: parsed.tipo,
+    fecha_primera: parsed.fecha_primera,
+    ubicacion_texto: parsed.ubicacion_texto,
+    lat: parsed.lat,
+    lng: parsed.lng,
+    ciudad: parsed.ciudad,
+    provincia,
+    comunidad_autonoma: comunidad,
+    pais_code: parsed.pais_code?.toUpperCase() ?? null,
+    nota: parsed.nota,
   };
 }
 
@@ -113,24 +128,39 @@ export async function createSexoLugar(
   const parsed = sexoLugarSchema.safeParse({
     nombre: formData.get("nombre"),
     tipo: formData.get("tipo"),
+    fecha_primera: formData.get("fecha_primera"),
     ubicacion_texto: formData.get("ubicacion_texto") ?? "",
     lat: formData.get("lat"),
     lng: formData.get("lng"),
     pais_code: formData.get("pais_code"),
     provincia: formData.get("provincia"),
     ciudad: formData.get("ciudad"),
+    comunidad_autonoma: formData.get("comunidad_autonoma"),
+    nota: formData.get("nota"),
+    confirmar_duplicado: formData.get("confirmar_duplicado"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Datos no válidos." };
   }
 
-  const lugarPayload = {
-    ...parsed.data,
-    provincia:
-      normalizeSpainProvince(parsed.data.provincia) ?? parsed.data.provincia,
-    pais_code: parsed.data.pais_code?.toUpperCase() ?? null,
-  };
+  if (!parsed.data.confirmar_duplicado) {
+    const dups = await findSexoLugarDuplicates(
+      parsed.data.nombre,
+      parsed.data.ciudad,
+    );
+    if (dups.length > 0) {
+      return {
+        error: "¿Este lugar ya existe?",
+        duplicates: dups.map((d) => ({
+          id: d.id,
+          nombre: d.nombre,
+          ciudad: d.ciudad,
+        })),
+      };
+    }
+  }
 
+  const lugarPayload = buildLugarPayload(parsed.data);
   const supabase = await createClient();
   let imagenUrl: string | null = null;
   const file = formData.get("imagen");
@@ -145,7 +175,7 @@ export async function createSexoLugar(
     .insert({
       ...lugarPayload,
       imagen_url: imagenUrl,
-      estado: "pendiente",
+      estado: "visitado",
       creado_por: user.id,
     })
     .select("id")
@@ -156,175 +186,98 @@ export async function createSexoLugar(
   redirect(`/sexo/lugares/${data.id}`);
 }
 
-export async function createSexoEncuentro(
+export async function updateSexoLugar(
   _prev: SexoFormState,
   formData: FormData,
 ): Promise<SexoFormState> {
-  const user = await getAuthedUser();
-  const parsed = sexoEncuentroSchema.safeParse({
-    lugar_id: formData.get("lugar_id"),
-    fecha: formData.get("fecha"),
-    titulo: formData.get("titulo"),
-    notas: formData.get("notas"),
-  });
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Datos no válidos." };
-  }
+  await getAuthedUser();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { error: "Lugar no válido." };
 
-  const supabase = await createClient();
-  let imagenUrl: string | null = null;
-  const file = formData.get("imagen");
-  if (file instanceof File && file.size > 0) {
-    const uploaded = await uploadSexoImage(supabase, user.id, file);
-    if (uploaded.error) return { error: uploaded.error };
-    imagenUrl = uploaded.url ?? null;
-  }
-
-  const { error } = await supabase.from("sexo_encuentros").insert({
-    lugar_id: parsed.data.lugar_id,
-    fecha: parsed.data.fecha,
-    titulo: parsed.data.titulo,
-    notas: parsed.data.notas ?? null,
-    imagen_url: imagenUrl,
-    creado_por: user.id,
-  });
-  if (error) return { error: "No se ha podido guardar el encuentro." };
-
-  await supabase
-    .from("sexo_lugares")
-    .update({
-      estado: "visitado",
-      actualizado_en: new Date().toISOString(),
-    })
-    .eq("id", parsed.data.lugar_id);
-
-  revalidateSexo([`/sexo/lugares/${parsed.data.lugar_id}`]);
-  redirect("/sexo/timeline");
-}
-
-export async function createSexoSugerencia(
-  _prev: SexoFormState,
-  formData: FormData,
-): Promise<SexoFormState> {
-  const user = await getAuthedUser();
-  const parsed = sexoSugerenciaSchema.safeParse({
-    titulo: formData.get("titulo"),
-    notas: formData.get("notas"),
+  const parsed = sexoLugarSchema.safeParse({
+    nombre: formData.get("nombre"),
     tipo: formData.get("tipo"),
+    fecha_primera: formData.get("fecha_primera"),
     ubicacion_texto: formData.get("ubicacion_texto") ?? "",
     lat: formData.get("lat"),
     lng: formData.get("lng"),
+    pais_code: formData.get("pais_code"),
+    provincia: formData.get("provincia"),
+    ciudad: formData.get("ciudad"),
+    comunidad_autonoma: formData.get("comunidad_autonoma"),
+    nota: formData.get("nota"),
+    confirmar_duplicado: "1",
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Datos no válidos." };
   }
 
+  const lugarPayload = buildLugarPayload(parsed.data);
   const supabase = await createClient();
-  let imagenUrl: string | null = null;
+
+  // Solo actualiza sexo_lugares; no modifica ni borra sexo_encuentros.
+  let imagenUrl: string | undefined;
   const file = formData.get("imagen");
   if (file instanceof File && file.size > 0) {
+    const user = await getAuthedUser();
     const uploaded = await uploadSexoImage(supabase, user.id, file);
     if (uploaded.error) return { error: uploaded.error };
-    imagenUrl = uploaded.url ?? null;
+    imagenUrl = uploaded.url;
   }
 
-  const { error } = await supabase.from("sexo_sugerencias").insert({
-    ...parsed.data,
-    imagen_url: imagenUrl,
-    estado: "propuesta",
-    propuesto_por: user.id,
-  });
-  if (error) return { error: "No se ha podido guardar la sugerencia." };
-
-  revalidateSexo();
-  redirect("/sexo/pendientes");
-}
-
-export async function acceptSexoSugerencia(id: string) {
-  const user = await getAuthedUser();
-  const supabase = await createClient();
-
-  const { data: sug, error: loadError } = await supabase
-    .from("sexo_sugerencias")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
-
-  if (loadError || !sug) throw new Error("Sugerencia no encontrada.");
-  if (sug.estado !== "propuesta") throw new Error("Ya está resuelta.");
-  if (sug.propuesto_por === user.id) {
-    throw new Error("No puedes aceptar tu propia sugerencia.");
-  }
-
-  const { data: lugar, error: lugarError } = await supabase
+  const { error } = await supabase
     .from("sexo_lugares")
-    .insert({
-      nombre: sug.titulo,
-      tipo: sug.tipo,
-      ubicacion_texto: sug.ubicacion_texto,
-      lat: sug.lat,
-      lng: sug.lng,
-      imagen_url: sug.imagen_url,
-      estado: "pendiente",
-      creado_por: user.id,
-    })
-    .select("id")
-    .single();
-
-  if (lugarError || !lugar) throw new Error("No se ha podido crear el lugar.");
-
-  await supabase
-    .from("sexo_sugerencias")
     .update({
-      estado: "aceptada",
+      ...lugarPayload,
+      ...(imagenUrl !== undefined ? { imagen_url: imagenUrl } : {}),
       actualizado_en: new Date().toISOString(),
     })
     .eq("id", id);
 
-  revalidateSexo([`/sexo/lugares/${lugar.id}`]);
-}
-
-export async function rejectSexoSugerencia(id: string) {
-  const user = await getAuthedUser();
-  const supabase = await createClient();
-
-  const { data: sug } = await supabase
-    .from("sexo_sugerencias")
-    .select("propuesto_por, estado")
-    .eq("id", id)
-    .maybeSingle();
-
-  if (!sug || sug.estado !== "propuesta") {
-    throw new Error("Sugerencia no válida.");
-  }
-  if (sug.propuesto_por === user.id) {
-    throw new Error("No puedes rechazar tu propia sugerencia.");
-  }
-
-  await supabase
-    .from("sexo_sugerencias")
-    .update({
-      estado: "rechazada",
-      actualizado_en: new Date().toISOString(),
-    })
-    .eq("id", id);
-
-  revalidateSexo();
+  if (error) return { error: "No se ha podido actualizar el lugar." };
+  revalidateSexo([`/sexo/lugares/${id}`]);
+  redirect(`/sexo/lugares/${id}`);
 }
 
 export async function deleteSexoLugar(id: string) {
   await getAuthedUser();
   const supabase = await createClient();
+
+  // Volcar textos de encuentros a nota antes del CASCADE (no DELETE directo
+  // de sexo_encuentros). Así el lugar guarda el recuerdo completo hasta el
+  // borrado explícito que pide la persona usuaria.
+  const [{ data: encuentros }, { data: lugar }] = await Promise.all([
+    supabase
+      .from("sexo_encuentros")
+      .select("titulo, notas, fecha")
+      .eq("lugar_id", id)
+      .order("fecha", { ascending: true }),
+    supabase.from("sexo_lugares").select("nota").eq("id", id).maybeSingle(),
+  ]);
+
+  if (encuentros?.length) {
+    let nota = (lugar?.nota as string | null)?.trim() ?? "";
+    for (const e of encuentros) {
+      const titulo = String(e.titulo ?? "").trim();
+      const cuerpo = String(e.notas ?? "").trim();
+      if (titulo && !nota.includes(titulo)) {
+        nota = nota ? `${titulo}\n\n${nota}` : titulo;
+      }
+      if (cuerpo && !nota.includes(cuerpo.slice(0, Math.min(48, cuerpo.length)))) {
+        nota = nota ? `${nota}\n\n${cuerpo}` : cuerpo;
+      }
+    }
+    await supabase
+      .from("sexo_lugares")
+      .update({
+        nota: nota || null,
+        actualizado_en: new Date().toISOString(),
+      })
+      .eq("id", id);
+  }
+
   const { error } = await supabase.from("sexo_lugares").delete().eq("id", id);
   if (error) throw new Error("No se ha podido borrar el lugar.");
   revalidateSexo();
   redirect("/sexo/lugares");
-}
-
-export async function deleteSexoEncuentro(id: string) {
-  await getAuthedUser();
-  const supabase = await createClient();
-  const { error } = await supabase.from("sexo_encuentros").delete().eq("id", id);
-  if (error) throw new Error("No se ha podido borrar el encuentro.");
-  revalidateSexo();
 }

@@ -62,12 +62,14 @@ export function LocationPickerMap({
   onChange,
   className,
   height = 280,
+  readOnly = false,
 }: {
   lat: number;
   lng: number;
   onChange: (lat: number, lng: number) => void;
   className?: string;
   height?: number;
+  readOnly?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -83,18 +85,22 @@ export function LocationPickerMap({
       center: [lat, lng],
       zoom: 11,
       scrollWheelZoom: true,
+      dragging: !readOnly,
+      doubleClickZoom: !readOnly,
     });
     L.tileLayer(TILE_URL, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(map);
 
-    const marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-    marker.on("dragend", () => {
-      const pos = marker.getLatLng();
-      onChangeRef.current(pos.lat, pos.lng);
-    });
-    map.on("click", (e: L.LeafletMouseEvent) => {
-      marker.setLatLng(e.latlng);
-      onChangeRef.current(e.latlng.lat, e.latlng.lng);
-    });
+    const marker = L.marker([lat, lng], { draggable: !readOnly }).addTo(map);
+    if (!readOnly) {
+      marker.on("dragend", () => {
+        const pos = marker.getLatLng();
+        onChangeRef.current(pos.lat, pos.lng);
+      });
+      map.on("click", (e: L.LeafletMouseEvent) => {
+        marker.setLatLng(e.latlng);
+        onChangeRef.current(e.latlng.lat, e.latlng.lng);
+      });
+    }
 
     mapRef.current = map;
     markerRef.current = marker;
@@ -141,6 +147,9 @@ export type MapMarker = {
   lng: number;
   nombre: string;
   label?: string;
+  href?: string;
+  ciudad?: string | null;
+  fecha?: string | null;
   provinciaKey?: string | null;
   paisKey?: string | null;
 };
@@ -191,6 +200,7 @@ export function SexoChoroplethMap({
   onSelectRegion,
   onSelectMarker,
   selectedKey,
+  binary = true,
   className,
   height = 420,
 }: {
@@ -200,6 +210,8 @@ export function SexoChoroplethMap({
   onSelectRegion?: (key: string | null) => void;
   onSelectMarker?: (id: string) => void;
   selectedKey?: string | null;
+  /** Si true, color sí/no sin intensidad por cantidad. */
+  binary?: boolean;
   className?: string;
   height?: number;
 }) {
@@ -210,25 +222,43 @@ export function SexoChoroplethMap({
   const featureByNameRef = useRef<Map<string, L.Path>>(new Map());
   const regionsRef = useRef(regions);
   const selectedRef = useRef(selectedKey);
+  const binaryRef = useRef(binary);
   const onSelectRef = useRef(onSelectRegion);
   const onMarkerRef = useRef(onSelectMarker);
   regionsRef.current = regions;
   selectedRef.current = selectedKey;
+  binaryRef.current = binary;
   onSelectRef.current = onSelectRegion;
   onMarkerRef.current = onSelectMarker;
 
   function styleForName(name: string): L.PathOptions {
     const stats = regionsRef.current.find((r) => r.key === name);
+    const isSelected = selectedRef.current === name;
+    if (binaryRef.current) {
+      return {
+        color: isSelected ? "#e0c060" : stats ? "#8fb0d9" : "#2b3a5a",
+        weight: isSelected ? 2.5 : stats ? 1.4 : 0.8,
+        fillColor: stats ? "#7196c9" : "#1a2438",
+        fillOpacity: stats ? 0.55 : 0.28,
+      };
+    }
     const intensity = stats
       ? Math.min(0.85, 0.35 + stats.encuentros * 0.1)
       : 0.12;
-    const isSelected = selectedRef.current === name;
     return {
       color: isSelected ? "#e0c060" : stats ? "#8fb0d9" : "#2b3a5a",
       weight: isSelected ? 2.5 : stats ? 1.4 : 0.8,
       fillColor: stats ? "#7196c9" : "#1a2438",
       fillOpacity: stats ? intensity : 0.28,
     };
+  }
+
+  function tooltipForName(name: string): string {
+    const stats = regionsRef.current.find((r) => r.key === name);
+    if (!stats) return `${name}: sin lugares`;
+    return binaryRef.current
+      ? `${name}: registrada`
+      : `${name}: ${stats.lugares} lugares`;
   }
 
   function restyleAll() {
@@ -255,7 +285,6 @@ export function SexoChoroplethMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Carga / descarga del choropleth solo al cambiar de modo.
   useEffect(() => {
     if (!mapRef.current) return;
     const mapInstance = mapRef.current;
@@ -282,12 +311,7 @@ export function SexoChoroplethMap({
         onEachFeature: (feature, lyr) => {
           const name = featureCanonicalName(feature);
           featureByNameRef.current.set(name, lyr as L.Path);
-          const stats = regionsRef.current.find((r) => r.key === name);
-          lyr.bindTooltip(
-            stats
-              ? `${name}: ${stats.lugares} lugares · ${stats.encuentros} encuentros`
-              : `${name}: sin visitas`,
-          );
+          lyr.bindTooltip(tooltipForName(name));
           lyr.on("click", () => onSelectRef.current?.(name));
         },
       });
@@ -303,20 +327,13 @@ export function SexoChoroplethMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
-  // Restyle cuando cambian regiones o selección.
   useEffect(() => {
     restyleAll();
     for (const [name, lyr] of featureByNameRef.current) {
-      const stats = regions.find((r) => r.key === name);
-      lyr.bindTooltip(
-        stats
-          ? `${name}: ${stats.lugares} lugares · ${stats.encuentros} encuentros`
-          : `${name}: sin visitas`,
-      );
+      lyr.bindTooltip(tooltipForName(name));
     }
-  }, [regions, selectedKey]);
+  }, [regions, selectedKey, binary]);
 
-  // Zoom a provincia seleccionada (sin markers aún, o si no hay puntos).
   useEffect(() => {
     const map = mapRef.current;
     if (!map || mode !== "espana") return;
@@ -361,6 +378,12 @@ export function SexoChoroplethMap({
         fillOpacity: 0.95,
         weight: 2,
       });
+      const lines = [
+        `<strong>${m.nombre}</strong>`,
+        m.ciudad ? m.ciudad : "",
+        m.fecha ? m.fecha : "",
+      ].filter(Boolean);
+      marker.bindPopup(lines.join("<br/>"));
       marker.bindTooltip(m.label ?? m.nombre);
       marker.on("click", (e) => {
         L.DomEvent.stopPropagation(e);

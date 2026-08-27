@@ -136,6 +136,7 @@ export interface AppUpdate {
 export type SexoLugarTipo =
   | "hotel"
   | "casa"
+  | "apartamento"
   | "exterior"
   | "coche"
   | "otros";
@@ -162,6 +163,9 @@ export interface SexoLugar {
   pais_code: string | null;
   provincia: string | null;
   ciudad: string | null;
+  comunidad_autonoma: string | null;
+  fecha_primera: string;
+  nota: string | null;
   imagen_url: string | null;
   estado: SexoLugarEstado;
   creado_por: string;
@@ -169,6 +173,7 @@ export interface SexoLugar {
   actualizado_en: string;
 }
 
+/** @deprecated Encuentros dejaron de usarse en el rediseño ID-006. */
 export interface SexoEncuentro {
   id: string;
   lugar_id: string;
@@ -181,15 +186,14 @@ export interface SexoEncuentro {
   actualizado_en: string;
 }
 
+/** @deprecated */
 export interface SexoEncuentroConLugar extends SexoEncuentro {
   lugar: SexoLugar;
 }
 
-export interface SexoLugarConStats extends SexoLugar {
-  encuentros_count: number;
-  ultima_fecha: string | null;
-}
+export type SexoLugarConStats = SexoLugar;
 
+/** @deprecated */
 export interface SexoSugerencia {
   id: string;
   titulo: string;

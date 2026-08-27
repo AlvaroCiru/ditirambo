@@ -5,9 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
-import { formatFechaCorta } from "@/lib/sexo-meta";
+import {
+  formatFechaCorta,
+  formatLocalizacion,
+} from "@/lib/sexo-meta";
 import { normalizeSpainProvince } from "@/lib/spain-provinces";
-import type { SexoEncuentroConLugar, SexoLugarConStats } from "@/lib/types";
+import type { SexoLugar } from "@/lib/types";
+import type { ChoroplethRegion } from "@/components/sexo/sexo-maps";
 
 const SexoChoroplethMap = dynamic(
   () =>
@@ -23,7 +27,7 @@ const SexoChoroplethMap = dynamic(
 );
 
 type PlaceKey = {
-  lugar: SexoLugarConStats;
+  lugar: SexoLugar;
   regionKey: string | null;
 };
 
@@ -32,13 +36,7 @@ async function loadProvinceFeatures(): Promise<GeoJSON.Feature[]> {
   return mod.getSpainProvinceFeatures();
 }
 
-export function SexoMapaClient({
-  lugares,
-  encuentros,
-}: {
-  lugares: SexoLugarConStats[];
-  encuentros: SexoEncuentroConLugar[];
-}) {
+export function SexoMapaClient({ lugares }: { lugares: SexoLugar[] }) {
   const [mode, setMode] = useState<"espana" | "mundo">("espana");
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedLugarId, setSelectedLugarId] = useState<string | null>(null);
@@ -92,51 +90,20 @@ export function SexoMapaClient({
     }));
 
   const regions = useMemo(() => {
-    const map = new Map<
-      string,
-      { key: string; label: string; lugarIds: Set<string>; encuentroIds: Set<string> }
-    >();
-
-    function ensure(key: string) {
-      let row = map.get(key);
-      if (!row) {
-        row = {
-          key,
-          label: key,
-          lugarIds: new Set(),
-          encuentroIds: new Set(),
-        };
-        map.set(key, row);
-      }
-      return row;
-    }
-
+    const map = new Map<string, ChoroplethRegion>();
     for (const { lugar, regionKey } of resolved) {
       if (!regionKey) continue;
-      if (lugar.estado !== "visitado" && lugar.encuentros_count <= 0) continue;
-      ensure(regionKey).lugarIds.add(lugar.id);
+      const row = map.get(regionKey) ?? {
+        key: regionKey,
+        label: regionKey,
+        lugares: 0,
+        encuentros: 0,
+      };
+      row.lugares += 1;
+      map.set(regionKey, row);
     }
-
-    for (const e of encuentros) {
-      const match = resolved.find((r) => r.lugar.id === e.lugar.id);
-      const key =
-        match?.regionKey ??
-        (mode === "espana"
-          ? normalizeSpainProvince(e.lugar.provincia) ?? e.lugar.provincia
-          : e.lugar.pais_code?.toUpperCase() ?? null);
-      if (!key) continue;
-      const row = ensure(key);
-      row.lugarIds.add(e.lugar.id);
-      row.encuentroIds.add(e.id);
-    }
-
-    return [...map.values()].map((r) => ({
-      key: r.key,
-      label: r.label,
-      lugares: r.lugarIds.size,
-      encuentros: r.encuentroIds.size,
-    }));
-  }, [resolved, encuentros, mode]);
+    return [...map.values()];
+  }, [resolved]);
 
   const markers = useMemo(() => {
     if (!selected) return [];
@@ -150,9 +117,10 @@ export function SexoMapaClient({
         lat: lugar.lat!,
         lng: lugar.lng!,
         nombre: lugar.nombre,
-        label: `${lugar.nombre}${lugar.encuentros_count ? ` · ${lugar.encuentros_count}` : ""}`,
-        provinciaKey: lugar.provincia,
-        paisKey: lugar.pais_code,
+        label: `${lugar.nombre} · ${formatFechaCorta(lugar.fecha_primera)}`,
+        href: `/sexo/lugares/${lugar.id}`,
+        ciudad: lugar.ciudad,
+        fecha: lugar.fecha_primera,
       }));
   }, [resolved, selected]);
 
@@ -160,11 +128,6 @@ export function SexoMapaClient({
     () => lugares.find((l) => l.id === selectedLugarId) ?? null,
     [lugares, selectedLugarId],
   );
-
-  const encuentrosDelLugar = useMemo(() => {
-    if (!selectedLugarId) return [];
-    return encuentros.filter((e) => e.lugar_id === selectedLugarId);
-  }, [encuentros, selectedLugarId]);
 
   const carousel = useMemo(() => {
     if (!selected) return [];
@@ -211,11 +174,9 @@ export function SexoMapaClient({
 
       <p className="text-sm text-muted-foreground">
         {selected
-          ? selectedLugar
-            ? "Pulsa otro punto o vuelve atrás. Abajo están los encuentros del lugar."
-            : "Puntos = lugares. Pulsa uno para ver sus encuentros."
+          ? "Puntos = lugares. Pulsa uno para ver el detalle."
           : mode === "espana"
-            ? "Provincias visitadas en color. Pulsa una para ampliarla."
+            ? "Provincias con al menos un lugar. Pulsa una para ampliarla."
             : "Pulsa un país de la lista para ver sus lugares."}
       </p>
 
@@ -231,7 +192,7 @@ export function SexoMapaClient({
               }}
               className="rounded-md border border-border bg-card px-3 py-1.5 text-sm hover:border-primary"
             >
-              {r.key} · {r.lugares}
+              {r.key}
             </button>
           ))}
         </div>
@@ -242,6 +203,7 @@ export function SexoMapaClient({
         regions={regions}
         markers={markers}
         selectedKey={selected}
+        binary
         onSelectRegion={(key) => {
           setSelected(key);
           setSelectedLugarId(null);
@@ -283,8 +245,7 @@ export function SexoMapaClient({
                   )}
                   <p className="truncate font-medium">{lugar.nombre}</p>
                   <p className="text-xs text-muted-foreground">
-                    {lugar.encuentros_count} encuentro
-                    {lugar.encuentros_count === 1 ? "" : "s"}
+                    {formatFechaCorta(lugar.fecha_primera)}
                   </p>
                 </button>
               ))}
@@ -294,46 +255,28 @@ export function SexoMapaClient({
       )}
 
       {selectedLugar && (
-        <section className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+        <section className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
           <div className="flex items-start justify-between gap-2">
             <div>
               <h3 className="font-heading text-xl">{selectedLugar.nombre}</h3>
               <p className="text-sm text-muted-foreground">
-                {[selectedLugar.ciudad, selectedLugar.provincia, selectedLugar.pais_code]
-                  .filter(Boolean)
-                  .join(" · ") || selectedLugar.ubicacion_texto || "Sin ubicación"}
+                {formatLocalizacion(selectedLugar)}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {formatFechaCorta(selectedLugar.fecha_primera)}
               </p>
             </div>
             <Link
               href={`/sexo/lugares/${selectedLugar.id}`}
               className="text-sm text-primary hover:underline"
             >
-              Ver ficha
+              Abrir ficha
             </Link>
           </div>
-          {encuentrosDelLugar.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Todavía no hay encuentros en este lugar.
+          {selectedLugar.nota && (
+            <p className="line-clamp-4 text-sm text-muted-foreground">
+              {selectedLugar.nota}
             </p>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {encuentrosDelLugar.map((e) => (
-                <li
-                  key={e.id}
-                  className="rounded-lg border border-border/70 bg-background px-3 py-2"
-                >
-                  <p className="font-medium">{e.titulo}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatFechaCorta(e.fecha)}
-                  </p>
-                  {e.notas && (
-                    <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">
-                      {e.notas}
-                    </p>
-                  )}
-                </li>
-              ))}
-            </ul>
           )}
         </section>
       )}

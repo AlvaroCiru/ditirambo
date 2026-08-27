@@ -1,11 +1,7 @@
 import { SexoMapaClient } from "@/components/sexo/sexo-mapa-client";
-import { getSexoEncuentros, getSexoLugares } from "@/lib/queries-sexo";
+import { getSexoLugares } from "@/lib/queries-sexo";
 
 export default async function SexoMapaPage() {
-  const [lugares, encuentros] = await Promise.all([
-    getSexoLugares(),
-    getSexoEncuentros(),
-  ]);
-
-  return <SexoMapaClient lugares={lugares} encuentros={encuentros} />;
+  const lugares = await getSexoLugares({ sort: "recientes" });
+  return <SexoMapaClient lugares={lugares} />;
 }

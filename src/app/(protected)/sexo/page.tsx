@@ -1,154 +1,83 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { SexoEncuentroCard } from "@/components/sexo/sexo-cards";
+import { SexoLugarCard } from "@/components/sexo/sexo-cards";
 import { Button } from "@/components/ui/button";
-import {
-  formatFechaCorta,
-  SEXO_TIPO_LABELS,
-  SEXO_TIPO_ORDER,
-} from "@/lib/sexo-meta";
-import {
-  getSexoCuriosidades,
-  getSexoEncuentros,
-} from "@/lib/queries-sexo";
+import { formatFechaCorta } from "@/lib/sexo-meta";
+import { getSexoCuriosidades, getSexoLugares } from "@/lib/queries-sexo";
 
 export default async function SexoInicioPage() {
-  const [curiosidades, encuentros] = await Promise.all([
+  const [curiosidades, lugares] = await Promise.all([
     getSexoCuriosidades(),
-    getSexoEncuentros(8),
+    getSexoLugares({ sort: "recientes" }),
   ]);
 
-  const stats = [
-    { label: "Lugares", value: curiosidades.lugares },
-    { label: "Provincias", value: curiosidades.provincias },
-    { label: "Países", value: curiosidades.paises },
-    { label: "Encuentros", value: curiosidades.encuentros },
-  ];
+  const ultimos = lugares.slice(0, 6);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {stats.map((s) => (
-          <div
-            key={s.label}
-            className="rounded-xl border border-border bg-card px-4 py-3"
-          >
-            <p className="text-2xl font-heading">{s.value}</p>
-            <p className="text-xs text-muted-foreground">{s.label}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap gap-2">
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-3">
+        <h2 className="font-heading text-3xl tracking-tight">SEXO</h2>
         <Button
-          size="sm"
+          className="self-start"
           nativeButton={false}
           render={
-            <Link href="/sexo/encuentro/nuevo">
+            <Link href="/sexo/lugares/nuevo">
               <Plus className="size-4" />
-              Añadir encuentro
+              Añadir lugar
             </Link>
           }
         />
-        <Button
-          size="sm"
-          variant="outline"
-          nativeButton={false}
-          render={<Link href="/sexo/mapa">Ver mapa detallado</Link>}
-        />
-        <Button
-          size="sm"
-          variant="outline"
-          nativeButton={false}
-          render={<Link href="/sexo/lugares/nuevo">Nuevo lugar</Link>}
-        />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <section className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <h2 className="font-heading text-xl">Línea temporal</h2>
-            <Link
-              href="/sexo/timeline"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              Ver todas
-            </Link>
-          </div>
-          {encuentros.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Aún no hay encuentros registrados.
-            </p>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {encuentros.map((e) => (
-                <SexoEncuentroCard key={e.id} encuentro={e} />
-              ))}
-            </div>
-          )}
-        </section>
-
-        <div className="flex flex-col gap-6">
-          <section className="rounded-xl border border-border bg-card p-4">
-            <h2 className="mb-3 font-heading text-lg">Lugares</h2>
-            <ul className="flex flex-col gap-2">
-              {SEXO_TIPO_ORDER.map((tipo) => (
-                <li key={tipo}>
-                  <Link
-                    href={`/sexo/lugares?tipo=${tipo}`}
-                    className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-secondary/50"
-                  >
-                    <span>{SEXO_TIPO_LABELS[tipo]}</span>
-                    <span className="text-muted-foreground">
-                      {curiosidades.porTipo[tipo]}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="rounded-xl border border-border bg-card p-4">
-            <h2 className="mb-3 font-heading text-lg">Curiosidades</h2>
-            <dl className="flex flex-col gap-2 text-sm">
-              <div className="flex justify-between gap-3">
-                <dt className="text-muted-foreground">Primera vez</dt>
-                <dd>
-                  {curiosidades.primeraFecha
-                    ? formatFechaCorta(curiosidades.primeraFecha)
-                    : "—"}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-muted-foreground">Último encuentro</dt>
-                <dd>
-                  {curiosidades.ultimaFecha
-                    ? formatFechaCorta(curiosidades.ultimaFecha)
-                    : "—"}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-muted-foreground">Provincia top</dt>
-                <dd>{curiosidades.provinciaMasRepetida ?? "—"}</dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-muted-foreground">Más lejos</dt>
-                <dd>
-                  {curiosidades.masLejos
-                    ? `${curiosidades.masLejos.km} km`
-                    : "—"}
-                </dd>
-              </div>
-            </dl>
-            <Link
-              href="/sexo/curiosidades"
-              className="mt-3 inline-block text-sm text-muted-foreground hover:text-foreground"
-            >
-              Ver todas las curiosidades
-            </Link>
-          </section>
+      <section className="rounded-xl border border-border bg-card p-5">
+        <h3 className="font-heading text-xl">Nuestra historia</h3>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {curiosidades.lugares} lugares · {curiosidades.provincias} provincias ·{" "}
+          {curiosidades.paises} países
+        </p>
+        {curiosidades.primeraFecha && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            Desde {formatFechaCorta(curiosidades.primeraFecha)}
+          </p>
+        )}
+        <div className="mt-3 flex flex-wrap gap-3 text-sm">
+          <Link
+            href="/sexo/curiosidades"
+            className="text-primary underline-offset-2 hover:underline"
+          >
+            Ver curiosidades
+          </Link>
+          <Link
+            href="/sexo/ajustes"
+            className="text-muted-foreground underline-offset-2 hover:underline"
+          >
+            Ajustes de casa
+          </Link>
         </div>
-      </div>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-heading text-xl">Últimos lugares</h3>
+          <Link
+            href="/sexo/lugares"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Ver todos
+          </Link>
+        </div>
+        {ultimos.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Todavía no hay lugares. Empieza añadiendo el primero.
+          </p>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {ultimos.map((lugar) => (
+              <SexoLugarCard key={lugar.id} lugar={lugar} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
