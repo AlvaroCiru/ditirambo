@@ -8,6 +8,7 @@ import { comunidadFromProvincia, DEFAULT_HOME } from "@/lib/sexo-meta";
 import { normalizeSpainProvince } from "@/lib/spain-provinces";
 import { findSexoLugarDuplicates } from "@/lib/queries-sexo";
 import { sexoCasaSchema, sexoLugarSchema } from "@/lib/sexo-validations";
+import { isOwnBucketPublicUrl } from "@/lib/storage-url";
 
 export interface SexoFormState {
   error?: string;
@@ -41,6 +42,36 @@ async function uploadSexoImage(
   return {
     url: supabase.storage.from("sexo").getPublicUrl(path).data.publicUrl,
   };
+}
+
+/** URL ya subida desde el cliente, o fichero (fallback). */
+async function resolveSexoImageUrl(
+  supabase: SupabaseServerClient,
+  userId: string,
+  formData: FormData,
+): Promise<{ url?: string | null; error?: string; touched: boolean }> {
+  const preUploaded = String(formData.get("imagen_url") ?? "").trim();
+  if (preUploaded) {
+    if (!isOwnBucketPublicUrl(preUploaded, "sexo", userId)) {
+      return {
+        url: undefined,
+        error: "La imagen subida no es válida.",
+        touched: true,
+      };
+    }
+    return { url: preUploaded, touched: true };
+  }
+
+  const file = formData.get("imagen");
+  if (file instanceof File && file.size > 0) {
+    const uploaded = await uploadSexoImage(supabase, userId, file);
+    if (uploaded.error) {
+      return { error: uploaded.error, touched: true };
+    }
+    return { url: uploaded.url ?? null, touched: true };
+  }
+
+  return { touched: false };
 }
 
 function buildLugarPayload(parsed: ReturnType<typeof sexoLugarSchema.parse>) {
@@ -162,13 +193,9 @@ export async function createSexoLugar(
 
   const lugarPayload = buildLugarPayload(parsed.data);
   const supabase = await createClient();
-  let imagenUrl: string | null = null;
-  const file = formData.get("imagen");
-  if (file instanceof File && file.size > 0) {
-    const uploaded = await uploadSexoImage(supabase, user.id, file);
-    if (uploaded.error) return { error: uploaded.error };
-    imagenUrl = uploaded.url ?? null;
-  }
+  const image = await resolveSexoImageUrl(supabase, user.id, formData);
+  if (image.error) return { error: image.error };
+  const imagenUrl = image.touched ? (image.url ?? null) : null;
 
   const { data, error } = await supabase
     .from("sexo_lugares")
@@ -190,7 +217,7 @@ export async function updateSexoLugar(
   _prev: SexoFormState,
   formData: FormData,
 ): Promise<SexoFormState> {
-  await getAuthedUser();
+  const user = await getAuthedUser();
   const id = String(formData.get("id") ?? "");
   if (!id) return { error: "Lugar no válido." };
 
@@ -216,20 +243,14 @@ export async function updateSexoLugar(
   const supabase = await createClient();
 
   // Solo actualiza sexo_lugares; no modifica ni borra sexo_encuentros.
-  let imagenUrl: string | undefined;
-  const file = formData.get("imagen");
-  if (file instanceof File && file.size > 0) {
-    const user = await getAuthedUser();
-    const uploaded = await uploadSexoImage(supabase, user.id, file);
-    if (uploaded.error) return { error: uploaded.error };
-    imagenUrl = uploaded.url;
-  }
+  const image = await resolveSexoImageUrl(supabase, user.id, formData);
+  if (image.error) return { error: image.error };
 
   const { error } = await supabase
     .from("sexo_lugares")
     .update({
       ...lugarPayload,
-      ...(imagenUrl !== undefined ? { imagen_url: imagenUrl } : {}),
+      ...(image.touched ? { imagen_url: image.url ?? null } : {}),
       actualizado_en: new Date().toISOString(),
     })
     .eq("id", id);

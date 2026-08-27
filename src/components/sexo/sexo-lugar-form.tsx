@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { AddressAutocomplete } from "@/components/sexo/address-autocomplete";
@@ -9,6 +9,7 @@ import {
   updateSexoLugar,
   type SexoFormState,
 } from "@/lib/actions/sexo";
+import { uploadFormImage } from "@/lib/client-image-upload";
 import {
   comunidadFromProvincia,
   SEXO_TIPO_LABEL_SINGULAR,
@@ -50,6 +51,8 @@ export function SexoLugarForm({
 }) {
   const action = lugar ? updateSexoLugar : createSexoLugar;
   const [state, formAction, pending] = useActionState(action, initialState);
+  const [uploadPending, startUpload] = useTransition();
+  const [clientError, setClientError] = useState<string | null>(null);
   const [lat, setLat] = useState(lugar?.lat ?? 40.4168);
   const [lng, setLng] = useState(lugar?.lng ?? -3.7038);
   const [useMap, setUseMap] = useState(
@@ -64,14 +67,40 @@ export function SexoLugarForm({
   const [forceDup, setForceDup] = useState(false);
 
   const showDupWarning = Boolean(state?.duplicates?.length) && !forceDup;
+  const busy = pending || uploadPending;
 
   const sugerida = useMemo(
     () => comunidadFromProvincia(provincia),
     [provincia],
   );
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setClientError(null);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const file = fd.get("imagen");
+
+    startUpload(async () => {
+      try {
+        if (file instanceof File && file.size > 0) {
+          const { url } = await uploadFormImage({ bucket: "sexo", file });
+          fd.set("imagen_url", url);
+          fd.delete("imagen");
+        }
+        formAction(fd);
+      } catch (err) {
+        setClientError(
+          err instanceof Error
+            ? err.message
+            : "No se ha podido preparar la foto.",
+        );
+      }
+    });
+  }
+
   return (
-    <form action={formAction} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {lugar && <input type="hidden" name="id" value={lugar.id} />}
       {forceDup && <input type="hidden" name="confirmar_duplicado" value="1" />}
 
@@ -216,7 +245,15 @@ export function SexoLugarForm({
         <Label htmlFor="imagen">
           Fotografía {lugar?.imagen_url ? "(sustituir)" : "(opcional)"}
         </Label>
-        <Input id="imagen" name="imagen" type="file" accept="image/*" />
+        <Input
+          id="imagen"
+          name="imagen"
+          type="file"
+          accept="image/*,.heic,.heif"
+        />
+        <p className="text-xs text-muted-foreground">
+          Sirve desde iPhone o Mac. La foto se comprime y sube al guardar.
+        </p>
       </div>
 
       {showDupWarning && (
@@ -255,20 +292,22 @@ export function SexoLugarForm({
         </div>
       )}
 
-      {state?.error && !showDupWarning && (
+      {(clientError || (state?.error && !showDupWarning)) && (
         <p role="alert" className="text-sm text-destructive">
-          {state.error}
+          {clientError ?? state?.error}
         </p>
       )}
 
-      <Button type="submit" disabled={pending}>
-        {pending
-          ? "Guardando…"
-          : lugar
-            ? "Guardar cambios"
-            : forceDup
-              ? "Crear de todas formas"
-              : "Añadir lugar"}
+      <Button type="submit" disabled={busy}>
+        {uploadPending
+          ? "Subiendo foto…"
+          : pending
+            ? "Guardando…"
+            : lugar
+              ? "Guardar cambios"
+              : forceDup
+                ? "Crear de todas formas"
+                : "Añadir lugar"}
       </Button>
     </form>
   );

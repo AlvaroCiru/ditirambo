@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Fotos de Sexo van por Storage directo; esto cubre el resto de formularios.
+      bodySizeLimit: "4mb",
+    },
+  },
   images: {
     remotePatterns: [
       {
