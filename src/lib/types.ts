@@ -71,6 +71,9 @@ export interface Cita {
   imagen_url: string | null;
   /** Foto recuerdo tras la cita (opcional). */
   recuerdo_url: string | null;
+  /** Código ISO país para bandera en Cuenta atrás (viajes). */
+  pais_code: string | null;
+  emoji: string | null;
   estado: CitaEstado;
   creado_por: string;
   aprobado_por: string | null;
@@ -85,7 +88,8 @@ export type NotificationTemplateKey =
   | "app_update"
   | "push_test"
   | "cita_propuesta"
-  | "cita_aceptada";
+  | "cita_aceptada"
+  | "dev_note_new";
 
 export interface NotificationTemplate {
   id: string;
@@ -206,5 +210,32 @@ export interface SexoSugerencia {
   estado: SexoSugerenciaEstado;
   propuesto_por: string;
   creado_en: string;
+  actualizado_en: string;
+}
+
+export interface CountdownTrip {
+  id: string;
+  nombre: string;
+  destino: string;
+  pais_code: string | null;
+  inicio_fecha: string;
+  inicio_hora: string | null;
+  fin_fecha: string | null;
+  emoji: string | null;
+  nota: string | null;
+  imagen_url: string | null;
+  creado_por: string;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+export interface CountdownTripReminder {
+  id: string;
+  trip_id: string;
+  user_id: string;
+  remind_30d: boolean;
+  remind_7d: boolean;
+  remind_1d: boolean;
+  remind_hoy: boolean;
   actualizado_en: string;
 }

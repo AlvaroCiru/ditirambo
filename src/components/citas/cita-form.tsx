@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { createCita, updateCita, type CitaFormState } from "@/lib/actions/citas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,18 +16,26 @@ import {
 } from "@/components/ui/select";
 import { CITA_CATEGORY_CONFIG, CITA_CATEGORY_ORDER } from "@/lib/cita-categories";
 import { toDatetimeLocalValue } from "@/lib/cita-datetime";
-import type { Cita } from "@/lib/types";
+import { inferPaisCode } from "@/lib/countdown-meta";
+import type { Cita, CitaCategoria } from "@/lib/types";
 
 const initialState: CitaFormState = {};
 
 export function CitaForm({ cita }: { cita?: Cita }) {
   const action = cita ? updateCita.bind(null, cita.id) : createCita;
   const [state, formAction, pending] = useActionState(action, initialState);
+  const [categoria, setCategoria] = useState<CitaCategoria>(
+    cita?.categoria ?? "excursiones",
+  );
+  const [titulo, setTitulo] = useState(cita?.titulo ?? "");
+  const [ubicacion, setUbicacion] = useState(cita?.ubicacion ?? "");
+  const [paisCode, setPaisCode] = useState(cita?.pais_code ?? "");
 
   const defaultInicio = cita
     ? toDatetimeLocalValue(cita.inicio_en)
     : "";
   const defaultFin = cita ? toDatetimeLocalValue(cita.fin_en) : "";
+  const esViaje = categoria === "viajes";
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -38,20 +46,33 @@ export function CitaForm({ cita }: { cita?: Cita }) {
           name="titulo"
           required
           maxLength={200}
-          defaultValue={cita?.titulo}
+          value={titulo}
+          onChange={(e) => {
+            setTitulo(e.target.value);
+            if (esViaje && !paisCode) {
+              const inferred = inferPaisCode(ubicacion, e.target.value);
+              if (inferred) setPaisCode(inferred);
+            }
+          }}
         />
       </div>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="categoria">Categoría</Label>
-        <Select name="categoria" defaultValue={cita?.categoria ?? "excursiones"}>
+        <Select
+          name="categoria"
+          value={categoria}
+          onValueChange={(value) => {
+            if (value) setCategoria(value as CitaCategoria);
+          }}
+        >
           <SelectTrigger id="categoria" className="w-full">
             <SelectValue placeholder="Elige una categoría" />
           </SelectTrigger>
           <SelectContent>
-            {CITA_CATEGORY_ORDER.map((categoria) => (
-              <SelectItem key={categoria} value={categoria}>
-                {CITA_CATEGORY_CONFIG[categoria].label}
+            {CITA_CATEGORY_ORDER.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {CITA_CATEGORY_CONFIG[cat].label}
               </SelectItem>
             ))}
           </SelectContent>
@@ -59,14 +80,57 @@ export function CitaForm({ cita }: { cita?: Cita }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="ubicacion">Ubicación</Label>
+        <Label htmlFor="ubicacion">
+          {esViaje ? "Destino / ubicación" : "Ubicación"}
+        </Label>
         <Input
           id="ubicacion"
           name="ubicacion"
-          placeholder="Sitio, ciudad, dirección…"
-          defaultValue={cita?.ubicacion}
+          placeholder={
+            esViaje
+              ? "País, ciudad, región…"
+              : "Sitio, ciudad, dirección…"
+          }
+          value={ubicacion}
+          onChange={(e) => {
+            setUbicacion(e.target.value);
+            if (esViaje) {
+              const inferred = inferPaisCode(e.target.value, titulo);
+              if (inferred) setPaisCode(inferred);
+            }
+          }}
         />
       </div>
+
+      {esViaje && (
+        <div className="grid gap-4 rounded-xl border border-border bg-card/50 p-4 sm:grid-cols-2">
+          <p className="sm:col-span-2 text-xs text-muted-foreground">
+            Estos datos aparecen en la pestaña Cuenta atrás (días restantes y
+            bandera).
+          </p>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="pais_code">País (código ISO)</Label>
+            <Input
+              id="pais_code"
+              name="pais_code"
+              maxLength={8}
+              placeholder="ES, RS, US…"
+              value={paisCode}
+              onChange={(e) => setPaisCode(e.target.value.toUpperCase())}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="emoji">Emoji (opcional)</Label>
+            <Input
+              id="emoji"
+              name="emoji"
+              maxLength={16}
+              placeholder="✈️"
+              defaultValue={cita?.emoji ?? undefined}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
@@ -106,7 +170,12 @@ export function CitaForm({ cita }: { cita?: Cita }) {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="imagen">
-          Foto {cita ? "(déjalo vacío para no cambiarla)" : "(opcional)"}
+          Foto{" "}
+          {esViaje
+            ? "de portada (Cuenta atrás)"
+            : cita
+              ? "(déjalo vacío para no cambiarla)"
+              : "(opcional)"}
         </Label>
         {cita?.imagen_url && (
           <div className="flex items-start gap-3">

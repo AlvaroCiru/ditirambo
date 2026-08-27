@@ -4,6 +4,7 @@ import {
   NotebookPen,
   BellRing,
   Flame,
+  Hourglass,
   type LucideIcon,
 } from "lucide-react";
 
@@ -36,6 +37,13 @@ export const APP_MODULES: AppModule[] = [
     href: "/citas",
     icon: CalendarDays,
     match: ["/citas"],
+  },
+  {
+    id: "cuenta-atras",
+    label: "Cuenta atrás",
+    href: "/cuenta-atras",
+    icon: Hourglass,
+    match: ["/cuenta-atras"],
   },
   {
     id: "sexo",

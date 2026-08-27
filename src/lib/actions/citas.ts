@@ -18,6 +18,7 @@ function revalidateCitas(citaId?: string) {
   revalidatePath("/citas");
   revalidatePath("/citas/lista");
   revalidatePath("/citas/nueva");
+  revalidatePath("/cuenta-atras");
   if (citaId) {
     revalidatePath(`/citas/${citaId}`);
     revalidatePath(`/citas/${citaId}/editar`);
@@ -105,6 +106,8 @@ export async function createCita(
     ubicacion: formData.get("ubicacion") ?? "",
     inicio_en: formData.get("inicio_en"),
     fin_en: formData.get("fin_en"),
+    pais_code: formData.get("pais_code"),
+    emoji: formData.get("emoji"),
   });
 
   if (!parsed.success) {
@@ -130,6 +133,8 @@ export async function createCita(
       ubicacion: parsed.data.ubicacion,
       inicio_en: parsed.data.inicio_en,
       fin_en: parsed.data.fin_en,
+      pais_code: parsed.data.pais_code,
+      emoji: parsed.data.emoji,
       imagen_url: imagenUrl,
       estado: "propuesta",
       creado_por: user.id,
@@ -165,6 +170,8 @@ export async function updateCita(
     ubicacion: formData.get("ubicacion") ?? "",
     inicio_en: formData.get("inicio_en"),
     fin_en: formData.get("fin_en"),
+    pais_code: formData.get("pais_code"),
+    emoji: formData.get("emoji"),
   });
 
   if (!parsed.success) {
@@ -180,6 +187,8 @@ export async function updateCita(
     ubicacion: string;
     inicio_en: string;
     fin_en: string;
+    pais_code: string | null;
+    emoji: string | null;
     imagen_url?: string | null;
     recuerdo_url?: string | null;
     actualizado_en: string;
@@ -190,6 +199,8 @@ export async function updateCita(
     ubicacion: parsed.data.ubicacion,
     inicio_en: parsed.data.inicio_en,
     fin_en: parsed.data.fin_en,
+    pais_code: parsed.data.pais_code,
+    emoji: parsed.data.emoji,
     actualizado_en: new Date().toISOString(),
   };
 

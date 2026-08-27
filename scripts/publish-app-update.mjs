@@ -32,21 +32,18 @@ function loadEnvLocal() {
 
 loadEnvLocal();
 
-const titulo = "Actualización — Sexo: lugares y mapa";
+const titulo = "Actualización — Cuenta atrás para viajes";
 const cuerpo = `1. Nuevas funcionalidades
-- La pestaña Sexo pasa a ser una base de datos de lugares distintos: cada sitio se registra una sola vez, con la fecha de la primera vez, nota o recuerdo y foto opcional.
-- Navegación simplificada: Inicio, Mapa, Lugares y Línea temporal. Curiosidades y ajustes de casa siguen accesibles desde Inicio.
-- Formulario «Añadir lugar» con localidad, provincia, comunidad, país, mapa y aviso si el lugar parece duplicado. Edición y borrado desde la ficha.
-- Mapa de España con provincias registradas en color (sin intensidad por cantidad); al pulsar se amplían y se muestran los lugares. Vista Mundo por países.
-- Línea temporal agrupada por año y mes, un lugar por entrada.
-- Curiosidades solo geográficas: lugares, ciudades, provincias, comunidades, países, primeras veces y lugar más lejano.
-- La nota o recuerdo de cada lugar no tiene límite de caracteres.
+- Nueva pestaña Cuenta atrás en la navegación: viajes próximos y pasados, con cuenta de días (incluido el día «HOY») y barra de progreso hasta la salida.
+- Incluye las citas de categoría Viajes del planificador junto con viajes creados solo para cuenta atrás. Las citas se abren y editan en el planificador; los viajes sueltos tienen ficha propia (alta, edición, foto y borrado).
+- En citas de Viajes se pueden indicar país (código ISO) y emoji; la foto de la cita sirve de portada en la cuenta atrás.
+- Al publicar una nota de desarrollo, el otro perfil recibe un aviso push.
 
 2. Errores / correcciones
 - Ninguno en esta tanda.
 
 3. Futuras actualizaciones
-- Mejoras de búsqueda de sitios por nombre comercial si hace falta.`;
+- Avisos opcionales por viaje (30 días, 7 días, 1 día y el día de la salida).`;
 
 const ALVARO_ID = "1cae6e8b-f6ca-4998-87ea-1d25d81dd7a6";
 

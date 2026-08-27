@@ -127,6 +127,18 @@ export const citaSchema = z
         }
         return date.toISOString();
       }),
+    pais_code: z
+      .string()
+      .trim()
+      .max(8)
+      .optional()
+      .transform((v) => (v ? v.toUpperCase() : null)),
+    emoji: z
+      .string()
+      .trim()
+      .max(16)
+      .optional()
+      .transform((v) => v || null),
   })
   .refine((data) => data.fin_en >= data.inicio_en, {
     message: "La fecha de fin debe ser igual o posterior al inicio.",

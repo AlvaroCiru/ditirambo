@@ -3,11 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { getAuthedUser } from "@/lib/dal";
+import { getAuthedUser, getProfiles } from "@/lib/dal";
 import {
   NOTE_PRIORITY_ORDER,
   NOTE_STATUS_ORDER,
 } from "@/lib/notes-meta";
+import { isAvisosWebEnabled } from "@/lib/push/config";
+import { sendTemplatedAviso } from "@/lib/push/templates";
 import type { DevNotePriority, DevNoteStatus } from "@/lib/types";
 
 export interface NoteFormState {
@@ -33,6 +35,28 @@ function revalidateNotes() {
   revalidatePath("/notas");
   revalidatePath("/notas/tablero");
   revalidatePath("/notas/actualizaciones");
+}
+
+async function notifyDevNoteNueva(options: {
+  authorId: string;
+  titulo: string;
+}) {
+  if (!isAvisosWebEnabled()) return;
+
+  const profiles = await getProfiles();
+  const partner = profiles.find((p) => p.id !== options.authorId);
+  if (!partner) return;
+
+  const author = profiles.find((p) => p.id === options.authorId);
+  await sendTemplatedAviso({
+    key: "dev_note_new",
+    userIds: [partner.id],
+    vars: {
+      nombre: author?.display_name ?? "Tu pareja",
+      titulo: options.titulo,
+    },
+    url: "/notas",
+  });
 }
 
 export async function createDevNote(
@@ -63,6 +87,11 @@ export async function createDevNote(
   if (error) {
     return { error: "No se ha podido guardar la nota." };
   }
+
+  await notifyDevNoteNueva({
+    authorId: user.id,
+    titulo: parsed.data.titulo,
+  });
 
   revalidateNotes();
   return { success: true };

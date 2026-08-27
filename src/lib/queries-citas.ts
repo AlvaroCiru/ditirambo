@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { Cita, CitaCategoria, CitaEstado } from "@/lib/types";
 
 const CITA_SELECT =
-  "id, titulo, descripcion, categoria, ubicacion, inicio_en, fin_en, imagen_url, recuerdo_url, estado, creado_por, aprobado_por, creado_en, actualizado_en";
+  "id, titulo, descripcion, categoria, ubicacion, inicio_en, fin_en, imagen_url, recuerdo_url, pais_code, emoji, estado, creado_por, aprobado_por, creado_en, actualizado_en";
 
 async function finalizePastCitas(supabase: Awaited<ReturnType<typeof createClient>>) {
   const now = new Date().toISOString();
