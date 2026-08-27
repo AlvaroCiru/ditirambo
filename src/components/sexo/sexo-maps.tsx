@@ -9,6 +9,7 @@ import {
   provinceNameFromFeature,
   type ProvinceFeatureProps,
 } from "@/lib/spain-provinces";
+import { countryNameFromCode } from "@/lib/country-names";
 
 const TILE_URL =
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
@@ -16,23 +17,45 @@ const TILE_ATTR =
   "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community";
 
 const SPAIN_GEO_URL = "/geo/spain-provinces.geojson";
+const WORLD_GEO_URL = "/geo/world-countries.geojson";
 
 let spainGeoCache: GeoJSON.FeatureCollection | null = null;
 let spainGeoPromise: Promise<GeoJSON.FeatureCollection | null> | null = null;
+let worldGeoCache: GeoJSON.FeatureCollection | null = null;
+let worldGeoPromise: Promise<GeoJSON.FeatureCollection | null> | null = null;
+
+async function loadGeoJson(
+  url: string,
+): Promise<GeoJSON.FeatureCollection | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    return (await res.json()) as GeoJSON.FeatureCollection;
+  } catch {
+    return null;
+  }
+}
 
 async function loadSpainProvinces(): Promise<GeoJSON.FeatureCollection | null> {
   if (spainGeoCache) return spainGeoCache;
   if (!spainGeoPromise) {
-    spainGeoPromise = fetch(SPAIN_GEO_URL)
-      .then(async (res) => {
-        if (!res.ok) return null;
-        const data = (await res.json()) as GeoJSON.FeatureCollection;
-        spainGeoCache = data;
-        return data;
-      })
-      .catch(() => null);
+    spainGeoPromise = loadGeoJson(SPAIN_GEO_URL).then((data) => {
+      spainGeoCache = data;
+      return data;
+    });
   }
   return spainGeoPromise;
+}
+
+async function loadWorldCountries(): Promise<GeoJSON.FeatureCollection | null> {
+  if (worldGeoCache) return worldGeoCache;
+  if (!worldGeoPromise) {
+    worldGeoPromise = loadGeoJson(WORLD_GEO_URL).then((data) => {
+      worldGeoCache = data;
+      return data;
+    });
+  }
+  return worldGeoPromise;
 }
 
 function fixDefaultIcon() {
@@ -54,6 +77,20 @@ function featureCanonicalName(feature: GeoJSON.Feature | undefined): string {
     feature?.properties as ProvinceFeatureProps | null,
   );
   return normalizeSpainProvince(raw) || raw || "Provincia";
+}
+
+function countryIsoFromFeature(feature: GeoJSON.Feature | undefined): string {
+  const props = feature?.properties as { ISO_A2?: string } | null;
+  return (props?.ISO_A2 ?? "").toUpperCase();
+}
+
+function regionKeyFromFeature(
+  mode: "espana" | "mundo",
+  feature: GeoJSON.Feature | undefined,
+): string {
+  return mode === "mundo"
+    ? countryIsoFromFeature(feature)
+    : featureCanonicalName(feature);
 }
 
 export function LocationPickerMap({
@@ -223,13 +260,19 @@ export function SexoChoroplethMap({
   const regionsRef = useRef(regions);
   const selectedRef = useRef(selectedKey);
   const binaryRef = useRef(binary);
+  const modeRef = useRef(mode);
   const onSelectRef = useRef(onSelectRegion);
   const onMarkerRef = useRef(onSelectMarker);
   regionsRef.current = regions;
   selectedRef.current = selectedKey;
   binaryRef.current = binary;
+  modeRef.current = mode;
   onSelectRef.current = onSelectRegion;
   onMarkerRef.current = onSelectMarker;
+
+  function displayNameForKey(key: string): string {
+    return modeRef.current === "mundo" ? countryNameFromCode(key) : key;
+  }
 
   function styleForName(name: string): L.PathOptions {
     const stats = regionsRef.current.find((r) => r.key === name);
@@ -254,11 +297,12 @@ export function SexoChoroplethMap({
   }
 
   function tooltipForName(name: string): string {
+    const label = displayNameForKey(name);
     const stats = regionsRef.current.find((r) => r.key === name);
-    if (!stats) return `${name}: sin lugares`;
+    if (!stats) return `${label}: sin lugares`;
     return binaryRef.current
-      ? `${name}: registrada`
-      : `${name}: ${stats.lugares} lugares`;
+      ? `${label}: registrada`
+      : `${label}: ${stats.lugares} lugares`;
   }
 
   function restyleAll() {
@@ -298,26 +342,33 @@ export function SexoChoroplethMap({
     let cancelled = false;
 
     async function loadGeo() {
-      if (mode !== "espana") {
-        mapInstance.setView([20, 0], 2);
+      const geojson =
+        mode === "espana"
+          ? await loadSpainProvinces()
+          : await loadWorldCountries();
+      if (cancelled || !mapRef.current || !geojson) {
+        if (mode === "mundo") mapInstance.setView([20, 0], 2);
         return;
       }
 
-      const geojson = await loadSpainProvinces();
-      if (cancelled || !mapRef.current || !geojson) return;
-
       const layer = L.geoJSON(geojson as GeoJSON.GeoJsonObject, {
-        style: (feature) => styleForName(featureCanonicalName(feature)),
+        style: (feature) =>
+          styleForName(regionKeyFromFeature(mode, feature)),
         onEachFeature: (feature, lyr) => {
-          const name = featureCanonicalName(feature);
-          featureByNameRef.current.set(name, lyr as L.Path);
-          lyr.bindTooltip(tooltipForName(name));
-          lyr.on("click", () => onSelectRef.current?.(name));
+          const key = regionKeyFromFeature(mode, feature);
+          if (!key) return;
+          featureByNameRef.current.set(key, lyr as L.Path);
+          lyr.bindTooltip(tooltipForName(key));
+          lyr.on("click", () => onSelectRef.current?.(key));
         },
       });
       layer.addTo(mapInstance);
       geoLayerRef.current = layer;
-      mapInstance.setView([40.4, -3.7], 6);
+      if (mode === "espana") {
+        mapInstance.setView([40.4, -3.7], 6);
+      } else {
+        mapInstance.setView([20, 0], 2);
+      }
     }
 
     void loadGeo();
@@ -336,10 +387,14 @@ export function SexoChoroplethMap({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || mode !== "espana") return;
+    if (!map) return;
 
     if (!selectedKey) {
-      map.setView([40.4, -3.7], 6, { animate: true });
+      if (mode === "espana") {
+        map.setView([40.4, -3.7], 6, { animate: true });
+      } else {
+        map.setView([20, 0], 2, { animate: true });
+      }
       return;
     }
 
@@ -347,7 +402,7 @@ export function SexoChoroplethMap({
     if (selectedLayer instanceof L.Polygon || selectedLayer instanceof L.Rectangle) {
       map.fitBounds(selectedLayer.getBounds(), {
         padding: [28, 28],
-        maxZoom: 10,
+        maxZoom: mode === "mundo" ? 6 : 10,
         animate: true,
       });
     } else if (selectedLayer && "getBounds" in selectedLayer) {
@@ -356,7 +411,7 @@ export function SexoChoroplethMap({
       ).getBounds();
       map.fitBounds(bounds, {
         padding: [28, 28],
-        maxZoom: 10,
+        maxZoom: mode === "mundo" ? 6 : 10,
         animate: true,
       });
     }

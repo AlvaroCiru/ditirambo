@@ -9,6 +9,7 @@ import {
   formatFechaCorta,
   formatLocalizacion,
 } from "@/lib/sexo-meta";
+import { countryNameFromCode } from "@/lib/country-names";
 import { normalizeSpainProvince } from "@/lib/spain-provinces";
 import type { SexoLugar } from "@/lib/types";
 import type { ChoroplethRegion } from "@/components/sexo/sexo-maps";
@@ -95,15 +96,22 @@ export function SexoMapaClient({ lugares }: { lugares: SexoLugar[] }) {
       if (!regionKey) continue;
       const row = map.get(regionKey) ?? {
         key: regionKey,
-        label: regionKey,
+        label:
+          mode === "mundo"
+            ? countryNameFromCode(regionKey)
+            : regionKey,
         lugares: 0,
         encuentros: 0,
       };
       row.lugares += 1;
       map.set(regionKey, row);
     }
-    return [...map.values()];
-  }, [resolved]);
+    const list = [...map.values()];
+    if (mode === "mundo") {
+      list.sort((a, b) => a.label.localeCompare(b.label, "es"));
+    }
+    return list;
+  }, [resolved, mode]);
 
   const markers = useMemo(() => {
     if (!selected) return [];
@@ -177,7 +185,7 @@ export function SexoMapaClient({ lugares }: { lugares: SexoLugar[] }) {
           ? "Puntos = lugares. Pulsa uno para ver el detalle."
           : mode === "espana"
             ? "Provincias con al menos un lugar. Pulsa una para ampliarla."
-            : "Pulsa un país de la lista para ver sus lugares."}
+            : "Países con al menos un lugar. Pulsa uno para ampliarlo."}
       </p>
 
       {mode === "mundo" && !selected && regions.length > 0 && (
@@ -192,7 +200,7 @@ export function SexoMapaClient({ lugares }: { lugares: SexoLugar[] }) {
               }}
               className="rounded-md border border-border bg-card px-3 py-1.5 text-sm hover:border-primary"
             >
-              {r.key}
+              {r.label}
             </button>
           ))}
         </div>
@@ -213,7 +221,9 @@ export function SexoMapaClient({ lugares }: { lugares: SexoLugar[] }) {
 
       {selected && (
         <div className="flex flex-col gap-3">
-          <h2 className="font-heading text-lg">{selected}</h2>
+          <h2 className="font-heading text-lg">
+            {mode === "mundo" ? countryNameFromCode(selected) : selected}
+          </h2>
           {carousel.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No hay lugares en esta zona.
