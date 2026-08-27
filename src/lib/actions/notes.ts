@@ -21,7 +21,11 @@ const noteSchema = z.object({
     .trim()
     .min(1, "El título no puede estar vacío.")
     .max(160),
-  cuerpo: z.string().trim().max(8000).optional(),
+  cuerpo: z
+    .string()
+    .trim()
+    .optional()
+    .transform((v) => v || undefined),
   prioridad: z.enum(NOTE_PRIORITY_ORDER).default("media"),
 });
 

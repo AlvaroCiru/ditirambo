@@ -53,7 +53,6 @@ export function NoteForm() {
           id="cuerpo"
           name="cuerpo"
           rows={4}
-          maxLength={8000}
           placeholder="Qué se quiere añadir o cambiar…"
         />
       </div>
