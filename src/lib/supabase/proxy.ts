@@ -2,9 +2,10 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const PUBLIC_PATHS = ["/login"];
+/** Renovar con Auth solo si el access token caduca en menos de esto. */
+const REFRESH_IF_EXPIRES_WITHIN_MS = 5 * 60 * 1000;
 const AUTH_TIMEOUT_MS = 8000;
 
-/** Cookies de sesión Supabase SSR (`sb-…-auth-token`, chunks, etc.). */
 function hasSupabaseAuthCookie(request: NextRequest): boolean {
   return request.cookies
     .getAll()
@@ -21,10 +22,13 @@ function redirectToLogin(request: NextRequest) {
   return NextResponse.redirect(url);
 }
 
-async function getUserOrTimeout(
-  getUser: () => Promise<{
-    data: { user: { id: string } | null };
-  }>,
+function needsRefresh(expiresAt: number | undefined): boolean {
+  if (!expiresAt) return true;
+  return expiresAt * 1000 - Date.now() < REFRESH_IF_EXPIRES_WITHIN_MS;
+}
+
+async function refreshUserWithTimeout(
+  getUser: () => Promise<{ data: { user: { id: string } | null } }>,
 ): Promise<{ id: string } | null | "timeout"> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
@@ -42,13 +46,9 @@ async function getUserOrTimeout(
 export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isPublicPath = PUBLIC_PATHS.includes(pathname);
-  const hasSessionCookie = hasSupabaseAuthCookie(request);
 
-  // Sin cookie: no llamar a Auth.
-  if (!hasSessionCookie) {
-    if (isPublicPath) {
-      return NextResponse.next({ request });
-    }
+  if (!hasSupabaseAuthCookie(request)) {
+    if (isPublicPath) return NextResponse.next({ request });
     return redirectToLogin(request);
   }
 
@@ -75,17 +75,26 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const user = await getUserOrTimeout(() => supabase.auth.getUser());
+  // Lectura local de la cookie (sin red). Evita 5–6 s por clic.
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  // Auth lento: NO expulsar. Había cookie de sesión; la página validará.
-  // (El timeout→login provocaba el bucle login ↔ inicio.)
-  if (user === "timeout") {
-    return response;
-  }
-
-  if (!user) {
+  if (!session?.user) {
     if (isPublicPath) return response;
     return redirectToLogin(request);
+  }
+
+  // Solo entonces contactar Auth (renovar token).
+  if (needsRefresh(session.expires_at)) {
+    const refreshed = await refreshUserWithTimeout(() =>
+      supabase.auth.getUser(),
+    );
+    if (refreshed === null) {
+      if (isPublicPath) return response;
+      return redirectToLogin(request);
+    }
+    // "timeout": dejar pasar con la sesión actual; no expulsar.
   }
 
   if (isPublicPath) {

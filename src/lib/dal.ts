@@ -5,8 +5,25 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Profile } from "@/lib/types";
 
+/** Renovar con Auth solo cerca de la caducidad del access token. */
+const REFRESH_IF_EXPIRES_WITHIN_MS = 5 * 60 * 1000;
+
 export const getAuthedUser = cache(async () => {
   const supabase = await createClient();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session?.user) {
+    const expiresAtMs = (session.expires_at ?? 0) * 1000;
+    const stillFresh = expiresAtMs - Date.now() >= REFRESH_IF_EXPIRES_WITHIN_MS;
+    if (stillFresh) {
+      return session.user;
+    }
+  }
+
+  // Token ausente, caducado o a punto de caducar → validar/renovar en Auth.
   const {
     data: { user },
   } = await supabase.auth.getUser();
