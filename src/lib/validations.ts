@@ -95,15 +95,27 @@ export const citaSchema = z
     descripcion: z
       .string()
       .trim()
-      .optional()
+      .nullish()
       .transform((v) => v || undefined),
     categoria: z.enum(CITA_CATEGORIA_VALUES),
-    ubicacion: z.string().trim().default(""),
+    ubicacion: z
+      .string()
+      .trim()
+      .nullish()
+      .transform((v) => v ?? ""),
     inicio_en: z
       .string()
-      .min(1, "La fecha de inicio es obligatoria.")
+      .nullish()
       .transform((v, ctx) => {
-        const date = parseDateTimeLocal(v);
+        const raw = (v ?? "").trim();
+        if (!raw) {
+          ctx.addIssue({
+            code: "custom",
+            message: "La fecha de inicio es obligatoria.",
+          });
+          return z.NEVER;
+        }
+        const date = parseDateTimeLocal(raw);
         if (!date) {
           ctx.addIssue({
             code: "custom",
@@ -115,9 +127,17 @@ export const citaSchema = z
       }),
     fin_en: z
       .string()
-      .min(1, "La fecha de fin es obligatoria.")
+      .nullish()
       .transform((v, ctx) => {
-        const date = parseDateTimeLocal(v);
+        const raw = (v ?? "").trim();
+        if (!raw) {
+          ctx.addIssue({
+            code: "custom",
+            message: "La fecha de fin es obligatoria.",
+          });
+          return z.NEVER;
+        }
+        const date = parseDateTimeLocal(raw);
         if (!date) {
           ctx.addIssue({
             code: "custom",
@@ -127,17 +147,18 @@ export const citaSchema = z
         }
         return date.toISOString();
       }),
+    // Ausentes en el form si la categoría no es Viajes (FormData → null).
     pais_code: z
       .string()
       .trim()
       .max(8)
-      .optional()
+      .nullish()
       .transform((v) => (v ? v.toUpperCase() : null)),
     emoji: z
       .string()
       .trim()
       .max(16)
-      .optional()
+      .nullish()
       .transform((v) => v || null),
   })
   .refine((data) => data.fin_en >= data.inicio_en, {
