@@ -29,7 +29,7 @@ export async function login(
     return { error: "Usuario o contraseña incorrectos." };
   }
 
-  redirect("/");
+  redirect("/resenas");
 }
 
 export async function logout() {

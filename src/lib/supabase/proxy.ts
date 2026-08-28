@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const PUBLIC_PATHS = ["/login"];
-const AUTH_TIMEOUT_MS = 3500;
+const AUTH_TIMEOUT_MS = 8000;
 
 /** Cookies de sesión Supabase SSR (`sb-…-auth-token`, chunks, etc.). */
 function hasSupabaseAuthCookie(request: NextRequest): boolean {
@@ -28,13 +28,12 @@ async function getUserOrTimeout(
 ): Promise<{ id: string } | null | "timeout"> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
-    const result = await Promise.race([
+    return await Promise.race([
       getUser().then((r) => r.data.user),
       new Promise<"timeout">((resolve) => {
         timer = setTimeout(() => resolve("timeout"), AUTH_TIMEOUT_MS);
       }),
     ]);
-    return result;
   } finally {
     if (timer) clearTimeout(timer);
   }
@@ -45,7 +44,7 @@ export async function updateSession(request: NextRequest) {
   const isPublicPath = PUBLIC_PATHS.includes(pathname);
   const hasSessionCookie = hasSupabaseAuthCookie(request);
 
-  // Sin cookie: no llamar a Auth. Login / estáticos OK; el resto → login.
+  // Sin cookie: no llamar a Auth.
   if (!hasSessionCookie) {
     if (isPublicPath) {
       return NextResponse.next({ request });
@@ -78,8 +77,13 @@ export async function updateSession(request: NextRequest) {
 
   const user = await getUserOrTimeout(() => supabase.auth.getUser());
 
-  // Auth colgado o sesión inválida → no bloquear la app indefinidamente.
-  if (user === "timeout" || !user) {
+  // Auth lento: NO expulsar. Había cookie de sesión; la página validará.
+  // (El timeout→login provocaba el bucle login ↔ inicio.)
+  if (user === "timeout") {
+    return response;
+  }
+
+  if (!user) {
     if (isPublicPath) return response;
     return redirectToLogin(request);
   }
