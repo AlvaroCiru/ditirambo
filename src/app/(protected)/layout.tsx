@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { getAuthedUser, getProfiles } from "@/lib/dal";
+import { getMyProfile } from "@/lib/dal";
 import { AppShell } from "@/components/nav/app-shell";
 import { LogoutButton } from "@/components/nav/logout-button";
 import { UserAvatar } from "@/components/profile/user-avatar";
@@ -10,9 +10,7 @@ export default async function ProtectedLayout({
 }: {
   children: ReactNode;
 }) {
-  const user = await getAuthedUser();
-  const profiles = await getProfiles();
-  const me = profiles.find((p) => p.id === user.id);
+  const me = await getMyProfile();
   const isAdmin = Boolean(me?.es_admin);
 
   const profileSlot = (

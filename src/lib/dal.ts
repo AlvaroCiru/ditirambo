@@ -18,6 +18,21 @@ export const getAuthedUser = cache(async () => {
   return user;
 });
 
+/** Perfil del usuario actual (1 fila). Preferible al listado completo en el shell. */
+export const getMyProfile = cache(async (): Promise<Profile | null> => {
+  const user = await getAuthedUser();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, display_name, avatar_url, es_admin")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) return null;
+  return { ...data, es_admin: Boolean(data.es_admin) };
+});
+
 export const getProfiles = cache(async (): Promise<Profile[]> => {
   await getAuthedUser();
   const supabase = await createClient();
@@ -33,9 +48,8 @@ export const getProfiles = cache(async (): Promise<Profile[]> => {
 });
 
 export const isCurrentUserAdmin = cache(async (): Promise<boolean> => {
-  const user = await getAuthedUser();
-  const profiles = await getProfiles();
-  return Boolean(profiles.find((p) => p.id === user.id)?.es_admin);
+  const me = await getMyProfile();
+  return Boolean(me?.es_admin);
 });
 
 export async function requireAdmin() {

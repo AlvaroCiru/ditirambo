@@ -140,46 +140,33 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   await getAuthedUser();
   const supabase = await createClient();
 
-  const [totalWorksResult, totalReviewsResult, ...filterResults] =
-    await Promise.all([
-      supabase.from("works").select("id", { count: "exact", head: true }),
-      supabase.from("reviews").select("id", { count: "exact", head: true }),
-      ...CATEGORY_ORDER.map((tipo) =>
-        supabase
-          .from("works")
-          .select("id", { count: "exact", head: true })
-          .eq("tipo", tipo),
-      ),
-      ...STATUS_ORDER.map((estado) =>
-        supabase
-          .from("works")
-          .select("id", { count: "exact", head: true })
-          .eq("estado", estado),
-      ),
-    ]);
+  // Una lectura de obras + un count de reseñas (antes ~14 roundtrips de count).
+  const [worksResult, reviewsResult] = await Promise.all([
+    supabase.from("works").select("tipo, estado"),
+    supabase.from("reviews").select("id", { count: "exact", head: true }),
+  ]);
 
-  if (totalWorksResult.error) throw totalWorksResult.error;
-  if (totalReviewsResult.error) throw totalReviewsResult.error;
+  if (worksResult.error) throw worksResult.error;
+  if (reviewsResult.error) throw reviewsResult.error;
 
+  const works = worksResult.data ?? [];
   const categoryCounts = Object.fromEntries(
-    CATEGORY_ORDER.map((tipo, index) => {
-      const result = filterResults[index];
-      if (result.error) throw result.error;
-      return [tipo, result.count ?? 0];
-    }),
+    CATEGORY_ORDER.map((tipo) => [tipo, 0]),
   ) as Record<WorkType, number>;
-
   const statusCounts = Object.fromEntries(
-    STATUS_ORDER.map((estado, index) => {
-      const result = filterResults[CATEGORY_ORDER.length + index];
-      if (result.error) throw result.error;
-      return [estado, result.count ?? 0];
-    }),
+    STATUS_ORDER.map((estado) => [estado, 0]),
   ) as Record<WorkStatus, number>;
 
+  for (const work of works) {
+    const tipo = work.tipo as WorkType;
+    const estado = work.estado as WorkStatus;
+    if (tipo in categoryCounts) categoryCounts[tipo] += 1;
+    if (estado in statusCounts) statusCounts[estado] += 1;
+  }
+
   return {
-    totalWorks: totalWorksResult.count ?? 0,
-    totalReviews: totalReviewsResult.count ?? 0,
+    totalWorks: works.length,
+    totalReviews: reviewsResult.count ?? 0,
     categoryCounts,
     statusCounts,
   };
@@ -197,30 +184,27 @@ export async function getPendingRecommendations(): Promise<
   const user = await getAuthedUser();
   const supabase = await createClient();
 
-  const { data: myReviews, error: myReviewsError } = await supabase
-    .from("reviews")
-    .select("work_id")
-    .eq("user_id", user.id);
+  const [myReviewsResult, recommendedResult] = await Promise.all([
+    supabase.from("reviews").select("work_id").eq("user_id", user.id),
+    supabase
+      .from("reviews")
+      .select(`*, works(${WORK_FEED_COLUMNS})`)
+      .eq("recomendado_para", user.id)
+      .returns<ReviewWithWork[]>(),
+  ]);
 
-  if (myReviewsError) throw myReviewsError;
+  if (myReviewsResult.error) throw myReviewsResult.error;
+  if (recommendedResult.error) throw recommendedResult.error;
 
-  const reviewedWorkIds = (myReviews ?? []).map((r) => r.work_id);
+  const reviewedWorkIds = new Set(
+    (myReviewsResult.data ?? []).map((r) => r.work_id),
+  );
 
-  let query = supabase
-    .from("reviews")
-    .select(`*, works(${WORK_FEED_COLUMNS})`)
-    .eq("recomendado_para", user.id);
-
-  if (reviewedWorkIds.length > 0) {
-    query = query.not("work_id", "in", `(${reviewedWorkIds.join(",")})`);
-  }
-
-  const { data, error } = await query.returns<ReviewWithWork[]>();
-
-  if (error) throw error;
-
-  return (data ?? [])
-    .filter((row): row is ReviewWithWork & { works: Work } => row.works !== null)
+  return (recommendedResult.data ?? [])
+    .filter(
+      (row): row is ReviewWithWork & { works: Work } =>
+        row.works !== null && !reviewedWorkIds.has(row.work_id),
+    )
     .map(({ works, ...fromReview }) => ({ work: works, fromReview }));
 }
 

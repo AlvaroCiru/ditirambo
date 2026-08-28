@@ -50,6 +50,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async headers() {
+    return [
+      {
+        // Contornos geográficos públicos: cacheables sin pasar por auth.
+        source: "/geo/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
