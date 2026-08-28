@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const PUBLIC_PATHS = ["/login"];
+const AUTH_TIMEOUT_MS = 3500;
 
 /** Cookies de sesión Supabase SSR (`sb-…-auth-token`, chunks, etc.). */
 function hasSupabaseAuthCookie(request: NextRequest): boolean {
@@ -14,20 +15,42 @@ function hasSupabaseAuthCookie(request: NextRequest): boolean {
     );
 }
 
+function redirectToLogin(request: NextRequest) {
+  const url = request.nextUrl.clone();
+  url.pathname = "/login";
+  return NextResponse.redirect(url);
+}
+
+async function getUserOrTimeout(
+  getUser: () => Promise<{
+    data: { user: { id: string } | null };
+  }>,
+): Promise<{ id: string } | null | "timeout"> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const result = await Promise.race([
+      getUser().then((r) => r.data.user),
+      new Promise<"timeout">((resolve) => {
+        timer = setTimeout(() => resolve("timeout"), AUTH_TIMEOUT_MS);
+      }),
+    ]);
+    return result;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isPublicPath = PUBLIC_PATHS.includes(pathname);
   const hasSessionCookie = hasSupabaseAuthCookie(request);
 
-  // Sin cookie de sesión: no hace falta llamar a Auth (ahorra el RTT a Supabase).
-  // Login y estáticos públicos siguen; el resto redirige al login.
+  // Sin cookie: no llamar a Auth. Login / estáticos OK; el resto → login.
   if (!hasSessionCookie) {
     if (isPublicPath) {
       return NextResponse.next({ request });
     }
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+    return redirectToLogin(request);
   }
 
   let response = NextResponse.next({ request });
@@ -53,17 +76,15 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUserOrTimeout(() => supabase.auth.getUser());
 
-  if (!user && !isPublicPath) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  // Auth colgado o sesión inválida → no bloquear la app indefinidamente.
+  if (user === "timeout" || !user) {
+    if (isPublicPath) return response;
+    return redirectToLogin(request);
   }
 
-  if (user && isPublicPath) {
+  if (isPublicPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/resenas";
     return NextResponse.redirect(url);

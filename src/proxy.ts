@@ -7,6 +7,10 @@ export default async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon-|apple-icon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|geojson)$).*)",
+    /*
+     * Excluye login (siempre alcanzable), estáticos y geojson.
+     * Así /login no depende de Auth ni puede quedar colgado.
+     */
+    "/((?!login(?:/|$)|_next/static|_next/image|favicon.ico|manifest.webmanifest|icon-|apple-icon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|geojson)$).*)",
   ],
 };
